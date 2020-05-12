@@ -15,11 +15,13 @@ int main(int argc, char* argv[])
 	NodesMap* map = nullptr;
 
 	InputManager input(&map);	
-
-
-	
 	std::cout << SDL_GetError();
-	RenderManager::renderMap(map);
-	SDL_Delay(3000);
+	RenderManager::InitialMapRender(map);
+
+	while (true)
+	{
+		input.handleInputEvents();
+		RenderManager::renderMap(map);
+	}
 	return 0;
 }

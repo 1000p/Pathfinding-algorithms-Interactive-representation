@@ -10,8 +10,7 @@ void RenderManager::createRendererAndWindow(const int width,const int height)
 	//Create window
 	window = SDL_CreateWindow("Visualizer",
 		SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, 
-		SDL_WINDOW_RESIZABLE
-		| SDL_WINDOW_HIDDEN);
+	 SDL_WINDOW_HIDDEN);
 	if (window == NULL)
 	{
 		printf("Window could not be created! SDL Error: %s\n", SDL_GetError());
@@ -20,7 +19,7 @@ void RenderManager::createRendererAndWindow(const int width,const int height)
 	{
 		//Create renderer for window
 		renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED 
-			| SDL_RENDERER_TARGETTEXTURE);
+			| SDL_RENDERER_TARGETTEXTURE | SDL_RENDERER_PRESENTVSYNC);
 		if (renderer == NULL)
 		{
 			printf("Renderer could not be created! SDL Error: %s\n", SDL_GetError());

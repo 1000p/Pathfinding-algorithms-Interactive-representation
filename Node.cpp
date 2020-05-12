@@ -9,6 +9,7 @@ SDL_Texture* Node::endT = nullptr;
 SDL_Texture* Node::pathT = nullptr;
 SDL_Texture* Node::obstacleT = nullptr;
 SDL_Texture* Node::whiteT = nullptr;
+SDL_Texture* Node::hoverT = nullptr;
 
 
 void Node::initializeNodeTextures()
@@ -16,7 +17,7 @@ void Node::initializeNodeTextures()
 
 	SDL_Renderer* renderer = RenderManager::getRenderer();
 
-	SDL_ShowWindow(RenderManager::getWindow());
+	//SDL_ShowWindow(RenderManager::getWindow());
 
 	//Check if textures are initialized
 	if (openT != nullptr || closedT != nullptr || startT != nullptr ||
@@ -35,11 +36,12 @@ void Node::initializeNodeTextures()
 	SDL_Surface* path = IMG_Load("Tiles/path.png");
 	SDL_Surface* obstacle = IMG_Load("Tiles/obstacle.png");
 	SDL_Surface* white = IMG_Load("Tiles/white.png");
+	SDL_Surface* hover = IMG_Load("Tiles/hover.png");
 
 	//If any surface is not initialized exit
 	if (open == nullptr || close == nullptr || start == nullptr ||
 		end == nullptr || path == nullptr || obstacle == nullptr ||
-		white == nullptr)
+		white == nullptr || hover == nullptr)
 	{
 		std::cout << "Could not load tile/s surfaces!" << std::endl;
 		exit(-404);
@@ -56,12 +58,17 @@ void Node::initializeNodeTextures()
 	pathT = SDL_CreateTextureFromSurface(renderer, path);
 	obstacleT = SDL_CreateTextureFromSurface(renderer, obstacle);
 	whiteT = SDL_CreateTextureFromSurface(renderer, white);
+	hoverT = SDL_CreateTextureFromSurface(renderer, hover);
 
+	/*SDL_ShowWindow(RenderManager::getWindow());
+	SDL_RenderClear(renderer);
+	SDL_RenderCopy(renderer, hoverT, NULL, NULL);
+	SDL_RenderPresent(renderer);*/
 
 	//If any texture is not initialized exit
 	if (openT == nullptr || closedT == nullptr || startT == nullptr ||
 		endT == nullptr || pathT == nullptr || obstacleT == nullptr ||
-		whiteT == nullptr)
+		whiteT == nullptr || hoverT == nullptr)
 	{
 		std::cout << "Could not load tile/s textures from surfaces!" << std::endl;
 		exit(-404);
@@ -74,5 +81,20 @@ void Node::initializeNodeTextures()
 	SDL_FreeSurface(path);
 	SDL_FreeSurface(obstacle);
 	SDL_FreeSurface(white);
+	SDL_FreeSurface(hover);
 
+}
+
+void Node::handleEvent(SDL_Event* evt)
+{
+	switch (evt->type)
+	{
+	case SDL_MOUSEMOTION:
+	{
+		changeState(NodeState::HOVER);
+		owner->setLastHovered(this);
+	}
+	default:
+		break;
+	}
 }

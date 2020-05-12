@@ -8,12 +8,14 @@
 #include "SDL.h"
 #include "SDL_image.h"
 
+class NodesMap;
 
 class Node
 {
 public:
 
-	Node(NodeState state, int x, int y):texture(nullptr),state(state), x(x),y(y){
+	Node(NodeState state, int x, int y, NodesMap* owner)
+		:texture(nullptr),owner(owner),state(state), x(x),y(y){
 		changeState(state);
 	}
 
@@ -60,6 +62,11 @@ public:
 				texture = pathT;
 				break;
 			}
+			case NodeState::HOVER:
+			{
+				texture = hoverT;
+				break;
+			}
 			default:
 			{
 				//TODO: ADD TERMINATE PROGRAM FUNCTION RETURNING ERROR MSG
@@ -69,8 +76,11 @@ public:
 		}
 	}
 
+	void handleEvent(SDL_Event* evt);
+
 private:
 	SDL_Texture* texture;
+	NodesMap* owner;
 	NodeState state;
 	int x;
 	int y;
@@ -82,6 +92,7 @@ private:
 	static SDL_Texture* pathT;
 	static SDL_Texture* obstacleT;
 	static SDL_Texture* whiteT;
+	static SDL_Texture* hoverT;
 
 	friend class RenderManager;
 };
