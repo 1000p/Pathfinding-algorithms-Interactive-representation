@@ -1,7 +1,13 @@
 #include "Node.h"
 
 #include "RenderManager.h"
+#include "InputManager.h"
+#include "ResourceInitializer.h"
 
+
+InputManager& Node::inputManager = InputManager::getInstance();
+ResourceInitializer& Node::resourceInit = ResourceInitializer::getInstance();
+/*
 SDL_Texture* Node::openT = nullptr;
 SDL_Texture* Node::closedT = nullptr;
 SDL_Texture* Node::startT = nullptr;
@@ -10,8 +16,76 @@ SDL_Texture* Node::pathT = nullptr;
 SDL_Texture* Node::obstacleT = nullptr;
 SDL_Texture* Node::whiteT = nullptr;
 SDL_Texture* Node::hoverT = nullptr;
+*/
 
+void Node::changeState(NodeState newState)
+{
+	state = newState;
 
+	texture = resourceInit.getTexture(state);
+
+	/*
+	switch (state)
+	{
+	case NodeState::CLOSED:
+	{
+	texture = closedT;
+	break;
+	}
+	case NodeState::OPEN:
+	{
+	texture = openT;
+	break;
+	}
+	case NodeState::END:
+	{
+	texture = endT;
+	break;
+	}
+	case NodeState::START:
+	{
+	texture = startT;
+	break;
+	}
+	case NodeState::OBSTACLE:
+	{
+	texture = obstacleT;
+	break;
+	}
+	case NodeState::WHITE:
+	{
+	//if (texture == obstacleT)
+	//{
+	//	return;
+	//}
+	texture = whiteT;
+	break;
+	}
+	case NodeState::PATH:
+	{
+	texture = pathT;
+	break;
+	}
+	case NodeState::HOVER:
+	{
+	/*if (texture == obstacleT)
+	{
+	return;
+	}
+	texture = hoverT;
+	break;
+	}
+	default:
+	{
+	//TODO: ADD TERMINATE PROGRAM FUNCTION RETURNING ERROR MSG
+	texture = nullptr;
+	break;
+	}
+	}
+	*/
+}
+
+/*
 void Node::initializeNodeTextures()
 {
 
@@ -60,10 +134,12 @@ void Node::initializeNodeTextures()
 	whiteT = SDL_CreateTextureFromSurface(renderer, white);
 	hoverT = SDL_CreateTextureFromSurface(renderer, hover);
 
-	/*SDL_ShowWindow(RenderManager::getWindow());
+	/*
+	SDL_ShowWindow(RenderManager::getWindow());
 	SDL_RenderClear(renderer);
 	SDL_RenderCopy(renderer, hoverT, NULL, NULL);
-	SDL_RenderPresent(renderer);*/
+	SDL_RenderPresent(renderer);
+	
 
 	//If any texture is not initialized exit
 	if (openT == nullptr || closedT == nullptr || startT == nullptr ||
@@ -84,17 +160,94 @@ void Node::initializeNodeTextures()
 	SDL_FreeSurface(hover);
 
 }
-
-void Node::handleEvent(SDL_Event* evt)
+*/
+void Node::handleEvent (SDL_Event* evt)
 {
+	NodeState modifier = NodeState::WHITE;
+
+	//Checks the event type
 	switch (evt->type)
 	{
+		//if it's motion
 	case SDL_MOUSEMOTION:
 	{
-		changeState(NodeState::HOVER);
-		owner->setLastHovered(this);
+		//Switch on mouse state held down or not
+		switch (inputManager.getMouseState())
+		{
+			//Mouse held down
+		case SDL_MOUSEBUTTONDOWN:
+		{
+			//Get different texture based on phase
+			switch (owner->getPhase())
+			{
+				//Obstacle drawing phase
+			case Phase::P_OBSTACLE:
+			{			
+				if (owner->getEraser())
+				{
+					modifier = NodeState::WHITE;
+				}
+				else 
+				{
+					modifier = NodeState::OBSTACLE;
+				}
+				
+				break;
+			}
+			default:
+				break;
+			}
+			break;
+		}
+		 //Mouse button not held down
+		case SDL_MOUSEBUTTONUP:
+		{
+			//Get last hovered tile and check if it's tile is obstacle
+			Node* lastHovered = owner->getLastHovered();
+			if (lastHovered && lastHovered->state != NodeState::OBSTACLE)
+			{
+				//If not obstacle change to white
+				lastHovered->changeState(NodeState::WHITE);		
+				//Else do nothing
+			}
+			//Check if this tile is obstacle
+			if (state != NodeState::OBSTACLE) // If not obstacle
+			{
+				modifier = NodeState::HOVER; // Change to Hover
+			}
+			else // It is obstacle 
+			{
+				modifier = NodeState::OBSTACLE; //keep it obstacle
+			}
+			owner->setLastHovered(this);
+			break;
+		}
+		default:
+			break;
+		}
+
+		break;
+	}
+
+	//Single click event
+	case SDL_MOUSEBUTTONDOWN:
+	{ 
+		//If this is obstacle
+		if (texture == resourceInit.getTexture(NodeState::OBSTACLE))
+		{
+			modifier = NodeState::WHITE; //Return to empty tile
+			owner->setEraser(true);
+			break;
+		}
+		//else keep obstacle
+		modifier = NodeState::OBSTACLE;
+		owner->setEraser(false);
+		break;
 	}
 	default:
 		break;
 	}
+
+	//Change tile based on modifier;
+	changeState(modifier);
 }

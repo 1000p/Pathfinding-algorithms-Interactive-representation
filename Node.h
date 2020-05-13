@@ -9,6 +9,8 @@
 #include "SDL_image.h"
 
 class NodesMap;
+class InputManager;
+class ResourceInitializer;
 
 class Node
 {
@@ -19,64 +21,11 @@ public:
 		changeState(state);
 	}
 
-	static void initializeNodeTextures();
+	//static void initializeNodeTextures();
 
-	void changeState(NodeState newState)
-	{
-		state = newState;
+	void changeState(NodeState newState);
 
-		switch (state)
-		{
-			case NodeState::CLOSED:
-			{
-				texture = closedT;
-				break;
-			}
-			case NodeState::OPEN:
-			{
-				texture = openT;
-				break;
-			}
-			case NodeState::END:
-			{
-				texture = endT;
-				break;
-			}
-			case NodeState::START:
-			{
-				texture = startT;
-				break;
-			}
-			case NodeState::OBSTACLE:
-			{
-				texture = obstacleT;
-				break;
-			}
-			case NodeState::WHITE:
-			{
-				texture = whiteT;
-				break;
-			}
-			case NodeState::PATH:
-			{
-				texture = pathT;
-				break;
-			}
-			case NodeState::HOVER:
-			{
-				texture = hoverT;
-				break;
-			}
-			default:
-			{
-				//TODO: ADD TERMINATE PROGRAM FUNCTION RETURNING ERROR MSG
-				texture = nullptr;
-				break;
-			}		
-		}
-	}
-
-	void handleEvent(SDL_Event* evt);
+	void handleEvent (SDL_Event* evt);
 
 private:
 	SDL_Texture* texture;
@@ -85,6 +34,10 @@ private:
 	int x;
 	int y;
 	
+	static ResourceInitializer& resourceInit;
+	static InputManager& inputManager;
+	
+	/*
 	static SDL_Texture* openT;
 	static SDL_Texture* closedT;
 	static SDL_Texture* startT;
@@ -93,6 +46,7 @@ private:
 	static SDL_Texture* obstacleT;
 	static SDL_Texture* whiteT;
 	static SDL_Texture* hoverT;
+	*/
 
 	friend class RenderManager;
 };

@@ -1,19 +1,24 @@
 #include "InputManager.h"
-
+#include "ResourceInitializer.h"
 #include "RenderManager.h"
 
 #include <string>
 
-InputManager::InputManager(NodesMap** map):mapR(map)
+
+
+void InputManager::init(NodesMap** map)
 {
+	mapR = map;
+	mouseState = SDL_MOUSEBUTTONUP;
+
 	int width;
 	int height;
 	inputWindowSize(width, height);
 	RenderManager::createRendererAndWindow(width, height);
 	inputMapSize(width, height);
-	Node::initializeNodeTextures();
+	ResourceInitializer::getInstance().init();
+	//Node::initializeNodeTextures();
 	*map = new NodesMap(width, height);
-
 }
 
 void InputManager::handleInputEvents()
@@ -29,14 +34,20 @@ void InputManager::handleInputEvents()
 			terminateProgram("You exited the program.", 0);
 			break;
 		}
+		case SDL_MOUSEBUTTONUP:
+		{
+			mouseState = static_cast<SDL_EventType>(e.type);
+			break;
+		}
 		case SDL_MOUSEBUTTONDOWN:
 		{
-			(*mapR)->handleInput(&e);
+			mouseState = static_cast<SDL_EventType>(e.type);
+			(*mapR)->handleEvent(&e);
 			break;
 		}
 		case SDL_MOUSEMOTION:
 		{
-			(*mapR)->handleInput(&e);
+			(*mapR)->handleEvent(&e);
 			break;
 		}
 		default:

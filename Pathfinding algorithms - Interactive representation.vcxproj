@@ -144,19 +144,28 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ButtonComponent.cpp" />
+    <ClCompile Include="Component.cpp" />
     <ClCompile Include="Globals.cpp" />
+    <ClCompile Include="InfoComponent.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="mainFunction.cpp" />
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="NodesMap.cpp" />
     <ClCompile Include="RenderManager.cpp" />
+    <ClCompile Include="ResourceInitializer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ButtonComponent.h" />
+    <ClInclude Include="Component.h" />
     <ClInclude Include="Globals.h" />
+    <ClInclude Include="InfoComponent.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="NodesMap.h" />
+    <ClInclude Include="PhaseDefines.h" />
     <ClInclude Include="RenderManager.h" />
+    <ClInclude Include="ResourceInitializer.h" />
     <ClInclude Include="StateDefines.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,17 +1,35 @@
 #pragma once
 
 #include "NodesMap.h"
+
 #include <cctype>
+
+
 
 class InputManager
 {
 public:
 
-	InputManager(NodesMap** map);
+	static InputManager& getInstance()
+	{
+		static InputManager instance;
+		return instance;
+	}
+
+	void init(NodesMap** map);
+	//InputManager(NodesMap** map);
 
 	void handleInputEvents();
 
+	SDL_EventType getMouseState() const
+	{
+		return mouseState;
+	}
+
 private:
+	InputManager() : mapR(nullptr), mouseState(SDL_MOUSEBUTTONUP) {}
+	InputManager(InputManager const&) = delete;
+	void operator = (InputManager const&) = delete;
 
 	//Gets user input for the map size, recurse if there is negative width of height
 	void inputMapSize(int& width, int& height);
@@ -30,5 +48,8 @@ private:
 
 	NodesMap** mapR;
 	std::vector<Node*> obstacles;
+	SDL_EventType mouseState;
+
+	
 };
 

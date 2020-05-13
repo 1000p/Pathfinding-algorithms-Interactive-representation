@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Node.h"
-
+#include "PhaseDefines.h"
 
 #include <vector>
 
@@ -11,7 +11,8 @@ class NodesMap
 	
 public:
 
-	NodesMap(int width, int height): _width(width), _height(height), lastHovered(nullptr)
+	NodesMap(int width, int height): _width(width), _height(height),eraser(false), lastHovered(nullptr),
+		currentPhase(Phase::P_OBSTACLE)
 	{
 		nodes.reserve(width * height);
 		drawCleanMap();
@@ -27,47 +28,81 @@ public:
 		return _height;
 	}
 
-	void handleInput(SDL_Event* evt)
+	void handleEvent(SDL_Event* evt)
 	{
 		switch (evt->type)
 		{
 		case SDL_MOUSEMOTION:
 		{
-			int X = evt->motion.x;
-			int Y = evt->motion.y;
-			//SDL_GetMouseState(&X, &Y);
-			bool isInside = false;
-
-			if (X >= x && X <= widthInPixels)
+			Node* node = is_node(evt);
+			if (node)
 			{
-				if (Y >= y && Y <= heightInPixels)
+				/*if (node != lastHovered && lastHovered != nullptr)
 				{
-					isInside = true;
-					int col = ((X / tileSize)+1 ) ;//(X / tileSize) + 1;
-					int row = ((Y / tileSize) );//(Y / tileSize) + 1;
-					int itx = (row * _width) + col-1;//((col * row)*row) - 1; //* row;
-					Node* node = nodes[itx];
-					if (node != lastHovered && lastHovered != nullptr)
-					{
-						lastHovered->changeState(NodeState::WHITE);
-					}
-						node->handleEvent(evt);
-
-					
-				}
+					lastHovered->changeState(NodeState::WHITE);
+				}*/
+				node->handleEvent(evt);
 			}
+		}
+		case SDL_MOUSEBUTTONDOWN:
+		{
+			Node* node = is_node(evt);
+			if (node)
+			{
+				node->handleEvent(evt);
+			}
+			break;
 		}
 		default:
 			break;
 		}
 	}
+
+	bool getEraser() const
+	{
+		return eraser;
+	}
+
+	void setEraser(bool value)
+	{
+		eraser = value;
+	}
+
+	Phase getPhase() const
+	{
+		return currentPhase;
+	}
 	
+	Node* getLastHovered() const
+	{
+		return lastHovered;
+	}
+
 	void setLastHovered(Node* last)
 	{
 		lastHovered = last;
 	}
 
 private:
+
+	Node* is_node(SDL_Event* evt)
+	{
+		int X = evt->motion.x;
+		int Y = evt->motion.y;
+
+		if (X >= x && X <= widthInPixels)
+		{
+			if (Y >= y && Y <= heightInPixels)
+			{
+				int col = ((X / tileSize) + 1);
+				int row = ((Y / tileSize));
+				int index = (row * _width) + col - 1;
+				Node* node = nodes[index];
+				return node;
+			}
+		}
+		return nullptr;
+	}
 
 	void drawCleanMap()
 	{
@@ -80,12 +115,15 @@ private:
 		}
 	}
 
+	bool eraser;
 	int x;
 	int y;
 	int tileSize;
 	int _width;
 	int _height;
+	Phase currentPhase;
 	Node* lastHovered;
+	
 
 	Uint32 texturesFomat;
 
