@@ -11,8 +11,9 @@ public:
     RenderManager()
     {} 
 
-    static void InitialMapRender(NodesMap* map);
+    //static void InitialMapRender(NodesMap* map);
 
+    /*
     static void renderMap(NodesMap* map)
     {
  
@@ -56,13 +57,9 @@ public:
         //SDL_RenderClear(renderer);
         SDL_RenderCopy(renderer, outTex, NULL, NULL);
         SDL_RenderPresent(renderer);
-    }
+    }*/
 
-    static void rednder()
-    {
-
-    }
-
+  
     static SDL_Window* getWindow() 
     {
         return window;

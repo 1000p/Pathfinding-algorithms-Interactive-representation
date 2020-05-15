@@ -150,6 +150,7 @@
     <ClCompile Include="InfoComponent.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="mainFunction.cpp" />
+    <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="NodesMap.cpp" />
     <ClCompile Include="RenderManager.cpp" />
@@ -161,6 +162,7 @@
     <ClInclude Include="Globals.h" />
     <ClInclude Include="InfoComponent.h" />
     <ClInclude Include="InputManager.h" />
+    <ClInclude Include="MainWindow.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="NodesMap.h" />
     <ClInclude Include="PhaseDefines.h" />

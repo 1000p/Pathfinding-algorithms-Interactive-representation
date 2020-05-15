@@ -17,6 +17,7 @@ TTF_Font* ResourceInitializer::font = nullptr;
 void ResourceInitializer::init()
 {
 	initializeNodeTextures();
+	initializeFont();
 }
 
 SDL_Texture* ResourceInitializer::getTexture(NodeState type) const
@@ -58,7 +59,7 @@ SDL_Texture* ResourceInitializer::getTexture(NodeState type) const
 		return hoverT;
 	}
 	default:
-		break;
+		return nullptr;
 	}
 }
 
@@ -141,7 +142,7 @@ void ResourceInitializer::initializeNodeTextures()
 void ResourceInitializer::initializeFont()
 {
 	TTF_Init();
-	font = TTF_OpenFont("Font.ttf", 12);
+	font = TTF_OpenFont("Font.ttf", 24);
 	if (!font)
 	{
 		std::cout << "Error loading font!" << std::endl;

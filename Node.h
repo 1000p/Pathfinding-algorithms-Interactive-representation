@@ -49,5 +49,6 @@ private:
 	*/
 
 	friend class RenderManager;
+	friend class MainWindow;
 };
 

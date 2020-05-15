@@ -1,14 +1,22 @@
 #include "RenderManager.h"
 #include "ResourceInitializer.h"
+#include "InfoComponent.h"
 
 SDL_Renderer* RenderManager::renderer = nullptr;
 SDL_Window* RenderManager::window = nullptr;
 int RenderManager::windowW = 0;
 int RenderManager::windowH = 0;
 
+/*
 void RenderManager::InitialMapRender(NodesMap* map)
 {
     SDL_ShowWindow(window);
+
+    //TEST !!!!!!!!!####################
+
+    
+    //  ##########################################################
+
     //Declare padding and get map size
     int paddingTB, paddingLR; //TB = top/botton; LR = left right
     int mapW = map->_width;
@@ -36,6 +44,8 @@ void RenderManager::InitialMapRender(NodesMap* map)
     std::cout << "\nThe program window was resized so wraps the tile map!\n" <<
         "New size: " << windowW << " x " << windowH << std::endl;
 
+    InfoComponent* statusBar = new InfoComponent();
+
     //TODO: use the padding vars when intruducing action bar
     /*
     paddingTB = (windowH % tileScaledSize != 0 ?
@@ -43,7 +53,7 @@ void RenderManager::InitialMapRender(NodesMap* map)
     //Get padding for left and right
     paddingLR = (windowW % tileScaledSize != 0 ?
     (windowW % tileScaledSize) / 2 : 0);
-    */
+    
 
     //Destination rect
     SDL_Rect dst{ 0,0,tileScaledSize,tileScaledSize };
@@ -71,30 +81,14 @@ void RenderManager::InitialMapRender(NodesMap* map)
     {
         for (int col = 0; col < mapW; ++col)
         {
-            //SDL_SetRenderTarget(renderer, outTex);
-            //TEST!!!
-            /*SDL_SetRenderTarget(renderer, NULL);
-            SDL_RenderCopy(renderer, vecPtr[it]->texture, NULL,NULL);
-            SDL_RenderPresent(renderer);*/
             //Render to texture and change the next destination accordingly
             SDL_RenderCopy(renderer, vecPtr[it]->texture, NULL, &dst);
-            //SDL_SetRenderTarget(renderer, NULL);
-            //SDL_RenderCopy(renderer, outTex, NULL, NULL);
-            // SDL_RenderPresent(renderer);
             dst.x += tileScaledSize;
             ++it;
         }
         dst.y += tileScaledSize;
         dst.x = 0;
     }
-    /*
-    //test
-    int y = 474;
-    int x = 1;
-
-    int row = 474/tileScaledSize +1;
-    int itx = ((((x / tileScaledSize) + 1) * row) - 1) * row;
-    */
 
     //Present rendering to texture
     SDL_RenderPresent(renderer);
@@ -104,6 +98,7 @@ void RenderManager::InitialMapRender(NodesMap* map)
     SDL_RenderCopy(renderer, outTex, NULL, NULL);
     SDL_RenderPresent(renderer);
 }
+*/
 
 void RenderManager::createRendererAndWindow(const int width,const int height)
 {

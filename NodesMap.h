@@ -87,16 +87,18 @@ private:
 
 	Node* is_node(SDL_Event* evt)
 	{
-		int X = evt->motion.x;
+		int X = evt->motion.x ;
 		int Y = evt->motion.y;
 
-		if (X >= x && X <= widthInPixels)
+		if (X >= x && X <= xRight)
 		{
-			if (Y >= y && Y <= heightInPixels)
+			X = abs(X - x);
+			if (Y>=y && Y<=yBottom)
 			{
-				int col = ((X / tileSize) + 1);
+				Y = abs(Y - y);
+				int col = ((X / tileSize)) == _width ? (X / tileSize)-1: (X / tileSize);
 				int row = ((Y / tileSize));
-				int index = (row * _width) + col - 1;
+				int index = ((row * _width) + col);
 				Node* node = nodes[index];
 				return node;
 			}
@@ -127,10 +129,15 @@ private:
 
 	Uint32 texturesFomat;
 
+	int xRight;
+	int yBottom;
+
 	int widthInPixels;
 	int heightInPixels;
 	std::vector<Node*> nodes;
 
 	friend class RenderManager;
+
+	friend class MainWindow;
 };
 
