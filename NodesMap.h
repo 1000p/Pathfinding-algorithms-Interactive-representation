@@ -28,6 +28,18 @@ public:
 		return _height;
 	}
 
+	bool is_inside(int x, int y)
+	{
+		if (x >= this->x && x <= xRight)
+		{
+			if (y >= this->y && y <= yBottom)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
 	void handleEvent(SDL_Event* evt)
 	{
 		switch (evt->type)
@@ -37,10 +49,6 @@ public:
 			Node* node = is_node(evt);
 			if (node)
 			{
-				/*if (node != lastHovered && lastHovered != nullptr)
-				{
-					lastHovered->changeState(NodeState::WHITE);
-				}*/
 				node->handleEvent(evt);
 			}
 		}
@@ -125,7 +133,7 @@ private:
 	int _height;
 	Phase currentPhase;
 	Node* lastHovered;
-	
+		
 
 	Uint32 texturesFomat;
 

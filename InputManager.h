@@ -4,7 +4,7 @@
 
 #include <cctype>
 
-
+class MainWindow;
 
 class InputManager
 {
@@ -16,8 +16,7 @@ public:
 		return instance;
 	}
 
-	void init(NodesMap** map);
-	//InputManager(NodesMap** map);
+	void init(NodesMap** map, MainWindow* window);
 
 	void handleInputEvents();
 
@@ -46,6 +45,7 @@ private:
 		exit(code);
 	}
 
+	MainWindow* mainWindow;
 	NodesMap** mapR;
 	std::vector<Node*> obstacles;
 	SDL_EventType mouseState;

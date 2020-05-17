@@ -12,12 +12,28 @@ public:
 	{
 
 		InputManager& inputManager = InputManager::getInstance();
-		inputManager.init(&map);
+		inputManager.init(&map, this);
         window = RenderManager::getWindow();
         renderer = RenderManager::getRenderer();
         init();
 		SDL_ShowWindow(RenderManager::getWindow());
 	}
+
+    void handleEvent(SDL_Event* evt)
+    {
+        int x = evt->motion.x;
+        int y = evt->motion.y;
+
+        if (map->is_inside(x, y))
+        {
+            map->handleEvent(evt);         
+        }
+        else if (infoBar->is_inside(x, y))
+        {
+            infoBar->handleEvent(evt);
+        }
+
+    }
 
 	NodesMap* getMap() const
 	{
@@ -33,15 +49,7 @@ public:
         //Destination rect
         SDL_Rect dst{ map->x,map->y,tileSize,tileSize };
 
-        //Destination texture
-        SDL_Texture* outTex = SDL_CreateTexture(renderer, map->texturesFomat, SDL_TEXTUREACCESS_TARGET,
-            _width, _height);
-
-        //Set output texture as rendering target and clear the renderer
-       // SDL_RenderClear(renderer);
-        SDL_SetRenderTarget(renderer, outTex);
-
-        //SDL_RenderClear(renderer);
+        SDL_RenderClear(renderer);
 
         //Iterate over the map
         int it = 0;
@@ -59,19 +67,13 @@ public:
             dst.y += tileSize;
             dst.x = map->x;
         }
-        infoBar->render(renderer, outTex);
+        infoBar->render(renderer, NULL);
        
         std::cout << SDL_GetError();
 
+        //Present 
+        SDL_RenderPresent(renderer);
 
-        //Present rendering to texture
-        SDL_RenderPresent(renderer);
-        //Set rendering target to default, clear renderer,
-        //copy texture, present
-        SDL_SetRenderTarget(renderer, NULL);
-        //SDL_RenderClear(renderer);
-        SDL_RenderCopy(renderer, outTex, NULL, NULL);
-        SDL_RenderPresent(renderer);
     }
 
 private:
@@ -91,11 +93,12 @@ private:
         //Get size of a texture tile
         int textureSide;
         Uint32 format;
-        SDL_QueryTexture(ResourceInitializer::getInstance().ResourceInitializer::getTexture(NodeState::WHITE),
+        SDL_QueryTexture(ResourceInitializer::getInstance()
+            .ResourceInitializer::getTexture(NodeState::WHITE),
             &format, NULL, &textureSide, NULL);
 
-        //###########INFOBAR CREATING WAS HERE !!!!!!!!!!!
-        _height -= 55;
+        //###########INFOBAR CREATING WAS HERE !
+        _height -= 55; // infobar height
 
         //Get padding for bottom and top      
         int divident = (_width < _height) ? _width : _height;
@@ -108,7 +111,7 @@ private:
         _width = mapW * tileScaledSize;
         _height = mapH * tileScaledSize;
         _width = _width >= 500 ? _width : 500;
-        _height += 55; // RELATES ON INFOBAR HEIGHT !!!!!#######
+        _height += 55; // RELATES ON INFOBAR HEIGHT !
 
         SDL_SetWindowSize(window, _width, _height);
         SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
@@ -117,7 +120,7 @@ private:
             "New size: " << _width << " x " << _height << std::endl;
 
         //Initialize the status bar
-        infoBar = new InfoComponent();
+        infoBar = new InfoComponent(this);
         SDL_Rect geometry = infoBar->getGeometry();
 
         //TODO: use the padding vars when intruducing action bar
@@ -125,63 +128,29 @@ private:
         paddingTB = (windowH % tileScaledSize != 0 ?
         (windowH % tileScaledSize) / 2 : 0);
         */
+
         //Get padding for left and right
         paddingLR = (_width - (tileScaledSize * mapW) != 0 ?
         (_width - (tileScaledSize * mapW)) / 2 : 0);
-        
-
-        //Destination rect
-        SDL_Rect dst{ paddingLR,geometry.y+geometry.h,tileScaledSize,tileScaledSize };
 
         //Sets node map coordinates, node size, textures format and dimensions in pixels
-        map->x = dst.x;
-        map->y = dst.y;
+        map->x = paddingLR;
+        map->y = geometry.y + geometry.h;
         map->tileSize = tileScaledSize;
         map->widthInPixels = tileScaledSize * mapW;
         map->heightInPixels = tileScaledSize * mapH;
-        map->xRight = dst.x + map->widthInPixels;
-        map->yBottom = dst.y + map->heightInPixels;
+        map->xRight = paddingLR + map->widthInPixels;
+        map->yBottom = geometry.y + geometry.h + map->heightInPixels;
         map->texturesFomat = format;
 
-        //Destination texture
-        SDL_Texture* outTex = SDL_CreateTexture(renderer, format,
-            SDL_TEXTUREACCESS_TARGET,
-            _width, _height);
-
-
-        //Set output texture as rendering target and clear the renderer
-        SDL_SetRenderTarget(renderer, outTex);
-        SDL_RenderClear(renderer);
-
-        //Iterate over the map
-        int it = 0;
-        const std::vector<Node*>& vecPtr = map->nodes;
-        for (int row = 0; row < mapH; ++row)
-        {
-            for (int col = 0; col < mapW; ++col)
-            {
-                //Render to texture and change the next destination accordingly
-                SDL_RenderCopy(renderer, vecPtr[it]->texture, NULL, &dst);
-                dst.x += tileScaledSize;
-                ++it;
-            }
-            dst.y += tileScaledSize;
-            dst.x = paddingLR;
-        }
-        SDL_RenderCopy(renderer, infoBar->getTexture(), NULL, &geometry);
-
-        //Set rendering target to default, clear renderer, 
-        //copy texture, present
-        SDL_SetRenderTarget(renderer, NULL);
-        SDL_RenderClear(renderer);
-        SDL_RenderCopy(renderer, outTex, NULL, NULL);
-        SDL_RenderPresent(renderer);
+        render();
 	}
 
     SDL_Window* window;
     SDL_Renderer* renderer;
 	NodesMap* map;
 	InfoComponent* infoBar;
+
 
     int _width;
     int _height;
