@@ -14,6 +14,7 @@ void ButtonComponent::handleEvent(SDL_Event* evt)
 			case SDL_MOUSEBUTTONDOWN:
 			{
 				pressed = true;
+				owner->react_on_button(type);
 				break;
 			}
 		default:

@@ -4,6 +4,7 @@
 #include "StateDefines.h"
 
 #include <iostream>
+#include <deque>
 
 #include "SDL.h"
 #include "SDL_image.h"
@@ -17,7 +18,8 @@ class Node
 public:
 
 	Node(NodeState state, int x, int y, NodesMap* owner)
-		:texture(nullptr),owner(owner),state(state), x(x),y(y){
+		:texture(nullptr),owner(owner),state(state),previousState(state),memoryState(state),
+		permanentState(state),x(x),y(y){
 		changeState(state);
 	}
 
@@ -28,25 +30,21 @@ public:
 	void handleEvent (SDL_Event* evt);
 
 private:
+
 	SDL_Texture* texture;
 	NodesMap* owner;
 	NodeState state;
+	NodeState memoryState;
+	NodeState permanentState;
+	NodeState previousState;
+
 	int x;
 	int y;
 	
 	static ResourceInitializer& resourceInit;
 	static InputManager& inputManager;
 	
-	/*
-	static SDL_Texture* openT;
-	static SDL_Texture* closedT;
-	static SDL_Texture* startT;
-	static SDL_Texture* endT;
-	static SDL_Texture* pathT;
-	static SDL_Texture* obstacleT;
-	static SDL_Texture* whiteT;
-	static SDL_Texture* hoverT;
-	*/
+
 
 	friend class RenderManager;
 	friend class MainWindow;

@@ -3,6 +3,7 @@
 #include "NodesMap.h"
 #include "InfoComponent.h"
 #include "ResourceInitializer.h"
+#include "ButtonDefines.h"
 
 class MainWindow
 {
@@ -74,6 +75,24 @@ public:
         //Present 
         SDL_RenderPresent(renderer);
 
+    }
+
+    void react_on_button(ButtonType type)
+    {
+        switch (type)
+        {
+        case ButtonType::START:
+            map->drawTile = NodeState::START;
+            break;
+        case ButtonType::END:
+            map->drawTile = NodeState::END;
+            break;
+        case ButtonType::OBSTACLE:
+            map->drawTile = NodeState::OBSTACLE;
+            break;
+        default:
+            break;
+        }
     }
 
 private:

@@ -9,5 +9,6 @@ enum class NodeState
 	PATH,
 	OBSTACLE,
 	WHITE,
-	HOVER
+	HOVER,
+	DEFAULT
 };

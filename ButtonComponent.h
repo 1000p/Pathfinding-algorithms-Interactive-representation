@@ -15,7 +15,7 @@ class ButtonComponent: public Component
 public:
 	ButtonComponent(std::pair <SDL_Rect, SDL_Texture*> texture,
 		std::pair <SDL_Rect, SDL_Texture*> text, ButtonType type,MainWindow* owner)
-		: Component(), type(type),pressed(false)
+		: Component(), type(type),pressed(false),owner(owner)
 	{
 		geometry.x = texture.first.x;
 		geometry.y = texture.first.y;

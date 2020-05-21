@@ -12,33 +12,17 @@ class NodesMap
 public:
 
 	NodesMap(int width, int height): _width(width), _height(height),eraser(false), lastHovered(nullptr),
-		currentPhase(Phase::P_OBSTACLE)
+		drawTile(NodeState::HOVER)
 	{
 		nodes.reserve(width * height);
 		drawCleanMap();
 	}
 
-	int getWidth() const
-	{
-		return _width;
-	}
+	int getWidth() const;
 
-	int getHeight() const
-	{
-		return _height;
-	}
+	int getHeight() const;
 
-	bool is_inside(int x, int y)
-	{
-		if (x >= this->x && x <= xRight)
-		{
-			if (y >= this->y && y <= yBottom)
-			{
-				return true;
-			}
-		}
-		return false;
-	}
+	bool is_inside(int x, int y);
 
 	void handleEvent(SDL_Event* evt)
 	{
@@ -66,53 +50,33 @@ public:
 		}
 	}
 
-	bool getEraser() const
-	{
-		return eraser;
-	}
+	bool getEraser() const;
 
-	void setEraser(bool value)
-	{
-		eraser = value;
-	}
+	void setEraser(bool value);
 
-	Phase getPhase() const
+	NodeState getDrawTile () const
 	{
-		return currentPhase;
+		return drawTile;
 	}
 	
-	Node* getLastHovered() const
-	{
-		return lastHovered;
-	}
+	Node* getLastHovered() const;
 
-	void setLastHovered(Node* last)
+	void setLastHovered(Node* last);
+
+	Node* getStartNode() const;
+
+	Node* getEndNode() const;
+
+	void setStartNode(Node* node);
+
+	void setEndNode(Node* node)
 	{
-		lastHovered = last;
+		endNode = node;
 	}
 
 private:
 
-	Node* is_node(SDL_Event* evt)
-	{
-		int X = evt->motion.x ;
-		int Y = evt->motion.y;
-
-		if (X >= x && X <= xRight)
-		{
-			X = abs(X - x);
-			if (Y>=y && Y<=yBottom)
-			{
-				Y = abs(Y - y);
-				int col = ((X / tileSize)) == _width ? (X / tileSize)-1: (X / tileSize);
-				int row = ((Y / tileSize));
-				int index = ((row * _width) + col);
-				Node* node = nodes[index];
-				return node;
-			}
-		}
-		return nullptr;
-	}
+	Node* is_node(SDL_Event* evt);
 
 	void drawCleanMap()
 	{
@@ -131,9 +95,10 @@ private:
 	int tileSize;
 	int _width;
 	int _height;
-	Phase currentPhase;
+	NodeState drawTile;
 	Node* lastHovered;
-		
+	Node* startNode;
+	Node* endNode;
 
 	Uint32 texturesFomat;
 
