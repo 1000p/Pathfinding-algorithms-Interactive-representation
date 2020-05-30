@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Globals.h"
+//#include "NodesMap.h"
 #include "StateDefines.h"
 
 #include <iostream>
@@ -17,9 +17,9 @@ class Node
 {
 public:
 
-	Node(NodeState state, int x, int y, NodesMap* owner)
+	Node(NodeState state, int y, int x, NodesMap* owner)
 		:texture(nullptr),owner(owner),state(state),previousState(state),memoryState(state),
-		permanentState(state),x(x),y(y){
+		permanentState(state),pathParrent(nullptr),x(x),y(y), Gcost(0), Hcost(0){
 		changeState(state);
 	}
 
@@ -28,6 +28,21 @@ public:
 	void changeState(NodeState newState);
 
 	void handleEvent (SDL_Event* evt);
+
+	int getX() const
+	{
+		return x;
+	}
+
+	int getY() const
+	{
+		return y;
+	}
+
+	int Fcost()
+	{
+		return Gcost + Hcost;
+	}
 
 private:
 
@@ -38,14 +53,19 @@ private:
 	NodeState permanentState;
 	NodeState previousState;
 
+	Node* pathParrent;
+
 	int x;
 	int y;
+
+	int Gcost;
+	int Hcost;
 	
 	static ResourceInitializer& resourceInit;
 	static InputManager& inputManager;
 	
-
-
+	friend class NodesMap;
+	friend class AStarPathfinder;
 	friend class RenderManager;
 	friend class MainWindow;
 };

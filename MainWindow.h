@@ -5,6 +5,10 @@
 #include "ResourceInitializer.h"
 #include "ButtonDefines.h"
 
+
+
+#include "AStarPathfinder.h"
+
 class MainWindow
 {
 public:
@@ -49,6 +53,19 @@ public:
 
         //Destination rect
         SDL_Rect dst{ map->x,map->y,tileSize,tileSize };
+
+        //TEST LINE REMOVE AFTER 
+        static bool rendered = false;
+        if (map->currentPhase == Phase::DYNAMIC_RETRACE)
+        {
+            
+            rendered = true;
+            AStarPathfinder aStar;
+            map->clearMap(Phase::DYNAMIC_RETRACE);
+            map->endNode == nullptr ? aStar.findPath(map->startNode, map->lastHovered) :
+                aStar.findPath(map->lastHovered, map->endNode);
+            //aStar.findPath(map->startNode, map->endNode);
+        }
 
         SDL_RenderClear(renderer);
 

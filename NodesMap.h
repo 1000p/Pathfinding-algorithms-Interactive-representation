@@ -4,6 +4,7 @@
 #include "PhaseDefines.h"
 
 #include <vector>
+#include <list>
 
 
 class NodesMap
@@ -12,7 +13,7 @@ class NodesMap
 public:
 
 	NodesMap(int width, int height): _width(width), _height(height),eraser(false), lastHovered(nullptr),
-		drawTile(NodeState::HOVER)
+		drawTile(NodeState::HOVER), currentPhase(Phase::DEFAULT)
 	{
 		nodes.reserve(width * height);
 		drawCleanMap();
@@ -74,6 +75,103 @@ public:
 		endNode = node;
 	}
 
+	void clearMap(Phase phase)
+	{
+		switch (phase)
+		{
+		case Phase::PATH_FOUND:
+			break;
+		case Phase::NO_START_OR_END:
+			break;
+		case Phase::CAN_CALCULATE_PATH:
+			break;
+		case Phase::DYNAMIC_RETRACE:
+			for (auto node : nodes)
+			{
+				if (node->state != NodeState::OBSTACLE && node->state != NodeState::WHITE)
+				{					
+					node->memoryState = node->permanentState = NodeState::WHITE;
+					node->changeState(NodeState::WHITE);
+				}
+			}
+			break;
+		case Phase::DEFAULT:
+			break;
+		default:
+			break;
+		}
+	}
+	
+	void setPhase(Phase phase)
+	{
+		currentPhase = phase;
+	}
+
+	std::vector<Node*> getNeighbours(Node* node)
+	{
+		std::vector<Node*> neighbours(4,nullptr);
+		neighbours.reserve(8);
+		int nodeX = node->x;
+		int nodeY = node->y;
+
+		//above
+		neighbours[0] = nodeY > 0 ? nodes[(_width * (nodeY - 1)) + nodeX ] : nullptr;
+		//below
+		neighbours[1] = nodeY < _height-1 ? nodes[(_width * (nodeY + 1)) + nodeX] : nullptr;
+		//left
+		neighbours[2] = nodeX > 0 ? nodes[(_width * nodeY) + (nodeX - 1)] : nullptr;
+		//right
+		neighbours[3] = nodeX < _width-1 ? nodes[(_width * nodeY) + (nodeX + 1)] : nullptr;
+
+		NodeState obstuction = NodeState::OBSTACLE;
+
+
+			if ((neighbours[0] && neighbours[2]) )
+			{
+				if (neighbours[0]->state != obstuction || neighbours[2]->state != obstuction)
+				{
+					//top-left
+					neighbours.push_back(nodes[(_width * (nodeY - 1)) + (nodeX - 1)]);
+				}
+			}		
+		
+
+
+			if ((neighbours[0] && neighbours[3]) )
+			{
+				if (neighbours[0]->state != obstuction || neighbours[3]->state != obstuction)
+				{
+					//top-right
+					neighbours.push_back(nodes[(_width * (nodeY - 1)) + (nodeX + 1)]);
+				}				
+			}
+		
+
+
+			if ((neighbours[1] && neighbours[2]))
+			{
+				if (neighbours[1]->state != obstuction || neighbours[2]->state != obstuction)
+				{
+					//bottom-left
+					neighbours.push_back(nodes[(_width * (nodeY + 1)) + (nodeX - 1)]);
+				}
+			}
+		
+
+
+			if ((neighbours[1] && neighbours[3]) )
+			{
+				if (neighbours[1]->state != obstuction || neighbours[3]->state != obstuction)
+				{
+					//bottom-right
+					neighbours.push_back(nodes[(_width * (nodeY + 1)) + (nodeX + 1)]);
+				}
+			}
+		
+
+		return neighbours;
+	}
+
 private:
 
 	Node* is_node(SDL_Event* evt);
@@ -95,6 +193,7 @@ private:
 	int tileSize;
 	int _width;
 	int _height;
+	Phase currentPhase;
 	NodeState drawTile;
 	Node* lastHovered;
 	Node* startNode;

@@ -27,30 +27,33 @@ void Node::handleEvent(SDL_Event* evt)
 	{
 	case SDL_MOUSEMOTION:
 	{
-		Node* startNode = owner->getStartNode();
-		Node* endNode = owner->getEndNode();
+
 		switch (stateMod)
 		{
 		case NodeState::START:
 		{	
+			
+
 			if (lastHovered == this && state == stateMod)
 			{
 				return;
 			}
-			
-			//Else - set previous state to = last frame state
-			if (this != startNode)
+
+			if (inputManager.getMouseState() == SDL_MOUSEBUTTONDOWN)
 			{
+				if (owner->getEndNode())
+				{
+					owner->setPhase(Phase::DYNAMIC_RETRACE);
+				}
+			}
+
 				previousState = state;
 				changeState(stateMod); // this frame state
-			}
-											
-			
+								
 			//If there is previous hovered tile change its state back
 			if (lastHovered)
 			{	
-				if (lastHovered == endNode || lastHovered == startNode ||
-					lastHovered->permanentState == NodeState::OBSTACLE)
+				if (lastHovered->permanentState != NodeState::WHITE)
 				{
 					if (this != lastHovered)
 					{
@@ -72,24 +75,26 @@ void Node::handleEvent(SDL_Event* evt)
 		}
 		case NodeState::END:
 		{
+			if (inputManager.getMouseState() == SDL_MOUSEBUTTONDOWN)
+			{
+				if (owner->getStartNode())
+				{
+					owner->setPhase(Phase::DYNAMIC_RETRACE);
+				}
+			}
+
 			if (lastHovered == this && state == stateMod)
 			{
 				return;
 			}
 
-			//Else - set previous state to = last frame state
-			if (this != endNode )
-			{
 				previousState = state;
 				changeState(stateMod); // this frame state
-			}
 
-		
 			//If there is previous hovered tile change its state back
 			if (lastHovered)
 			{
-				if (lastHovered == endNode || lastHovered == startNode ||
-					lastHovered->permanentState == NodeState::OBSTACLE)
+				if (lastHovered->permanentState != NodeState::WHITE)
 				{
 					if (this != lastHovered)
 					{
@@ -116,32 +121,41 @@ void Node::handleEvent(SDL_Event* evt)
 				return;
 			}
 
-			bool isStartOrEnd = (lastHovered == endNode || lastHovered == startNode);
+			bool isStartOrEnd = (permanentState == NodeState::START
+				|| permanentState == NodeState::END);
 
 
 			if (inputManager.getMouseState() == SDL_MOUSEBUTTONDOWN)
 			{
-				if (!isStartOrEnd )
+				if (isStartOrEnd )
 				{
-					if (owner->getEraser())
+					return;
+				}	
+				if (owner->getEraser())
+				{
+					if (permanentState == NodeState::OBSTACLE)
 					{
 						permanentState = memoryState;
 						changeState(memoryState);
-						owner->setLastHovered(this);
-						return;
-					}
-					permanentState = stateMod;
-					changeState(stateMod);
-					owner->setLastHovered(this);
+						owner->setLastHovered(this);						
+					}	
 					return;
-				}			
+				}
+				if (permanentState != stateMod)
+				{
+					memoryState = permanentState;
+				}				
+				permanentState = stateMod;
+				changeState(stateMod);
+				owner->setLastHovered(this);
+				return;
 			}
 						
 			changeState(stateMod); // this frame state
 			//If there is previous hovered tile change its state back
 			if (lastHovered)
 			{
-				if (isStartOrEnd)
+				if (lastHovered->permanentState != NodeState::WHITE)
 				{
 					if (this != lastHovered)
 					{
@@ -156,7 +170,6 @@ void Node::handleEvent(SDL_Event* evt)
 						{
 							lastHovered->changeState(lastHovered->memoryState);
 						}
-						//lastHovered->changeState(lastHovered->memoryState);
 					}
 				}
 
@@ -176,8 +189,9 @@ void Node::handleEvent(SDL_Event* evt)
 			//If there is previous hovered tile change its state back
 			if (lastHovered)
 			{
-				if (lastHovered == endNode || lastHovered == startNode ||
-					lastHovered->permanentState == NodeState::OBSTACLE)
+				if (/*lastHovered == endNode || lastHovered == startNode ||
+					lastHovered->permanentState == NodeState::OBSTACLE*/
+					lastHovered->permanentState != NodeState::WHITE)
 				{
 					if (this != lastHovered)
 					{
@@ -219,6 +233,7 @@ void Node::handleEvent(SDL_Event* evt)
 					startNode->permanentState = startNode->memoryState;
 				}
 				owner->setEndNode(nullptr);
+				endNode = nullptr;
 				permanentState = stateMod;
 				changeState(stateMod);
 				owner->setStartNode(this);
@@ -227,6 +242,7 @@ void Node::handleEvent(SDL_Event* evt)
 			{
 
 				owner->setStartNode(nullptr);
+				startNode = nullptr;
 				permanentState = memoryState;
 				changeState(permanentState);
 			}
@@ -241,6 +257,15 @@ void Node::handleEvent(SDL_Event* evt)
 				owner->setStartNode(this);				
 				changeState(stateMod);
 				permanentState = stateMod;
+			}
+
+			if (startNode == nullptr || endNode == nullptr)
+			{
+				owner->setPhase(Phase::NO_START_OR_END);
+			}
+			else
+			{
+				owner->setPhase(Phase::CAN_CALCULATE_PATH);
 			}
 
 			owner->setLastHovered(this);
@@ -258,6 +283,11 @@ void Node::handleEvent(SDL_Event* evt)
 					endNode->changeState(endNode->memoryState);
 					endNode->permanentState = endNode->memoryState;
 				}
+				/// <summary>
+				/// START NODE CHANING TO NULL
+				/// </summary>
+				/// <param name="evt"></param>
+				startNode = nullptr;
 				owner->setStartNode(nullptr);
 				permanentState = stateMod;
 				changeState(stateMod);
@@ -268,6 +298,11 @@ void Node::handleEvent(SDL_Event* evt)
 				owner->setEndNode(nullptr);
 				permanentState = memoryState;
 				changeState(permanentState);
+				/// <summary>
+				/// Here change of end node is happeing
+				/// </summary>
+				/// <param name="evt"></param>
+				endNode = nullptr;
 			}
 			else
 			{
@@ -282,17 +317,27 @@ void Node::handleEvent(SDL_Event* evt)
 				permanentState = stateMod;
 			}
 
+			if (startNode == nullptr || endNode == nullptr)
+			{
+				owner->setPhase(Phase::NO_START_OR_END);
+			}
+			else
+			{
+				owner->setPhase(Phase::CAN_CALCULATE_PATH);
+			}
+
 			owner->setLastHovered(this);
 			break;
 		}
 		case NodeState::OBSTACLE:
 		{
-			Node* startNode = owner->getStartNode();
-			Node* endNode = owner->getEndNode();
+			bool isStartOrEnd = permanentState == NodeState::END ||
+				permanentState == NodeState::START;
 	
 			if (permanentState == stateMod)
 			{
-				if (this != startNode || this != endNode)
+				if (/*this != startNode || this != endNode*/
+					!isStartOrEnd)
 				{
 					owner->setEraser(true);
 					permanentState = memoryState;
@@ -302,8 +347,9 @@ void Node::handleEvent(SDL_Event* evt)
 			else
 			{
 				owner->setEraser(false);
-				if (this != startNode || this != endNode)
+				if (!isStartOrEnd)
 				{
+					memoryState = permanentState;
 					permanentState = stateMod;
 					changeState(stateMod);
 				}
@@ -317,32 +363,7 @@ void Node::handleEvent(SDL_Event* evt)
 		}
 		break;
 	}
-	case SDL_MOUSEBUTTONUP:
-	{
-		switch (stateMod)
-		{
-		case NodeState::START:
-		{
-			break;
-		}
-		case NodeState::END:
-		{
-			break;
-		}
-		case NodeState::OBSTACLE:
-		{
-			
-			break;
-		}
-		case NodeState::HOVER:
-		{
-			break;
-		}
-		default:
-			break;
-		}
-		break;
-	}
+	
 	default:
 		break;
 	}

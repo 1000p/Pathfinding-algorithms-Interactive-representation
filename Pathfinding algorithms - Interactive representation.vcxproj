@@ -144,6 +144,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AStarPathfinder.cpp" />
     <ClCompile Include="ButtonComponent.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="Globals.cpp" />
@@ -157,6 +158,7 @@
     <ClCompile Include="ResourceInitializer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AStarPathfinder.h" />
     <ClInclude Include="ButtonComponent.h" />
     <ClInclude Include="ButtonDefines.h" />
     <ClInclude Include="Component.h" />
