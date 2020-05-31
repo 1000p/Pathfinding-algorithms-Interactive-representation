@@ -56,15 +56,17 @@ public:
 
         //TEST LINE REMOVE AFTER 
         static bool rendered = false;
-        if (map->currentPhase == Phase::DYNAMIC_RETRACE)
-        {
-            
+        if (map->currentPhase == Phase::CAN_CALCULATE_PATH ||
+            map->currentPhase == Phase::DYNAMIC_RETRACE)
+        {         
             rendered = true;
             AStarPathfinder aStar;
-            map->clearMap(Phase::DYNAMIC_RETRACE);
-            map->endNode == nullptr ? aStar.findPath(map->startNode, map->lastHovered) :
-                aStar.findPath(map->lastHovered, map->endNode);
-            //aStar.findPath(map->startNode, map->endNode);
+            map->clearMap(Phase::CAN_CALCULATE_PATH);
+            aStar.findPath(map->startNode, map->endNode);
+        }
+        else if (map->currentPhase == Phase::NO_START_OR_END)
+        {
+            map->clearMap(Phase::NO_START_OR_END);
         }
 
         SDL_RenderClear(renderer);

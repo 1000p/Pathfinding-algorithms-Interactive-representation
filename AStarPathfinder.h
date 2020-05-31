@@ -89,6 +89,13 @@ public:
 
 			
 		}	
+		start->changeState(NodeState::START);
+		start->permanentState = start->state;
+		start->memoryState = startMemoryState;
+		target->changeState(NodeState::END);
+		target->permanentState = target->state;
+		target->memoryState = targetMemoryState;
+		target->owner->setPhase(Phase::PATH_FOUND);
 	}
 
 private:

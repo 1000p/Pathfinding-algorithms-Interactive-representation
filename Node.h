@@ -29,6 +29,8 @@ public:
 
 	void handleEvent (SDL_Event* evt);
 
+	void handleMapPhase(NodeState tileState);
+
 	int getX() const
 	{
 		return x;

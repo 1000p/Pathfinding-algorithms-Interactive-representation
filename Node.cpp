@@ -32,20 +32,15 @@ void Node::handleEvent(SDL_Event* evt)
 		{
 		case NodeState::START:
 		{	
-			
-
 			if (lastHovered == this && state == stateMod)
 			{
 				return;
 			}
-
 			if (inputManager.getMouseState() == SDL_MOUSEBUTTONDOWN)
 			{
-				if (owner->getEndNode())
-				{
-					owner->setPhase(Phase::DYNAMIC_RETRACE);
-				}
+				handleMapPhase(stateMod);
 			}
+			
 
 				previousState = state;
 				changeState(stateMod); // this frame state
@@ -75,17 +70,19 @@ void Node::handleEvent(SDL_Event* evt)
 		}
 		case NodeState::END:
 		{
+			
+			
+
 			if (inputManager.getMouseState() == SDL_MOUSEBUTTONDOWN)
 			{
-				if (owner->getStartNode())
-				{
-					owner->setPhase(Phase::DYNAMIC_RETRACE);
-				}
+				handleMapPhase(stateMod);
 			}
-
-			if (lastHovered == this && state == stateMod)
+			else
 			{
-				return;
+				if (lastHovered == this && state == stateMod)
+				{
+					return;
+				}
 			}
 
 				previousState = state;
@@ -189,9 +186,7 @@ void Node::handleEvent(SDL_Event* evt)
 			//If there is previous hovered tile change its state back
 			if (lastHovered)
 			{
-				if (/*lastHovered == endNode || lastHovered == startNode ||
-					lastHovered->permanentState == NodeState::OBSTACLE*/
-					lastHovered->permanentState != NodeState::WHITE)
+				if (lastHovered->permanentState != NodeState::WHITE)
 				{
 					if (this != lastHovered)
 					{
@@ -257,6 +252,7 @@ void Node::handleEvent(SDL_Event* evt)
 				owner->setStartNode(this);				
 				changeState(stateMod);
 				permanentState = stateMod;
+				startNode = this;
 			}
 
 			if (startNode == nullptr || endNode == nullptr)
@@ -315,6 +311,7 @@ void Node::handleEvent(SDL_Event* evt)
 				owner->setEndNode(this);
 				changeState(stateMod);
 				permanentState = stateMod;
+				endNode = this;
 			}
 
 			if (startNode == nullptr || endNode == nullptr)
@@ -369,4 +366,60 @@ void Node::handleEvent(SDL_Event* evt)
 	}
 
 	
+}
+
+void Node::handleMapPhase(NodeState tileState)
+{
+	typedef void (NodesMap::* setStartOrEndFN)(Node* node);
+	setStartOrEndFN function = nullptr;{}
+	switch (tileState)
+	{
+
+	case NodeState::START:
+	{
+		function = &NodesMap::setStartNode;
+		break;
+	}
+
+	case NodeState::END:
+	{
+		function = &NodesMap::setEndNode;
+		break;
+	}
+	/*case NodeState::OBSTACLE:
+	break;
+
+	case NodeState::DEFAULT:
+	break;*/
+	default:
+		break;
+	}
+
+	switch (owner->getPhase())
+	{
+	case Phase::CAN_CALCULATE_PATH:
+	{
+		(owner->*function)(this);
+		owner->setPhase(Phase::CAN_CALCULATE_PATH);
+		break;
+	}
+	case Phase::PATH_FOUND:
+	{
+		(owner->*function)(this);
+		owner->setPhase(Phase::CAN_CALCULATE_PATH);
+		break;
+	}
+	case Phase::NO_START_OR_END:
+	{
+		(owner->*function)(this);
+		if (owner->getStartNode() && owner->getEndNode())
+		{
+			owner->setPhase(Phase::CAN_CALCULATE_PATH);
+			handleMapPhase(tileState);
+		}
+		break;
+	}
+	default:
+		break;
+	}
 }

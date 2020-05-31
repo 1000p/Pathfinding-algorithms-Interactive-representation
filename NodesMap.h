@@ -82,9 +82,41 @@ public:
 		case Phase::PATH_FOUND:
 			break;
 		case Phase::NO_START_OR_END:
+		{	for (auto node : nodes)
+			{
+				if (node->state != NodeState::OBSTACLE && node->state != NodeState::WHITE)
+				{
+					node->memoryState = node->permanentState = NodeState::WHITE;
+					node->changeState(NodeState::WHITE);
+				}
+			}
+			if (startNode)
+			{
+				startNode->changeState(NodeState::START);
+				startNode->memoryState = NodeState::WHITE;
+				startNode->permanentState = startNode->state;			
+			}
+			if (endNode)
+			{
+				endNode->changeState(NodeState::END);
+				endNode->memoryState = NodeState::WHITE;
+				endNode->permanentState = endNode->state;
+			}
+			currentPhase = Phase::DEFAULT;
 			break;
+		}
 		case Phase::CAN_CALCULATE_PATH:
-			break;
+		{	
+			for (auto node : nodes)
+			{
+				if (node->state != NodeState::OBSTACLE && node->state != NodeState::WHITE)
+				{
+					node->memoryState = node->permanentState = NodeState::WHITE;
+					node->changeState(NodeState::WHITE);
+				}
+			}
+		break;
+		}
 		case Phase::DYNAMIC_RETRACE:
 			for (auto node : nodes)
 			{
@@ -105,6 +137,11 @@ public:
 	void setPhase(Phase phase)
 	{
 		currentPhase = phase;
+	}
+
+	Phase getPhase()
+	{
+		return currentPhase;
 	}
 
 	std::vector<Node*> getNeighbours(Node* node)
