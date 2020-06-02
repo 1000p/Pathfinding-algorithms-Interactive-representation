@@ -3,8 +3,9 @@
 #include "RenderManager.h"
 #include "MainWindow.h"
 
-#include <string>
+#include "NodesMap.h"
 
+#include <string>
 
 
 void InputManager::init(NodesMap** map, MainWindow* window)
@@ -57,6 +58,13 @@ void InputManager::handleInputEvents()
 	}
 	
 }
+
+SDL_EventType InputManager::getMouseState() const
+{
+	return mouseState;
+}
+
+InputManager::InputManager() : mapR(nullptr), mainWindow(nullptr), mouseState(SDL_MOUSEBUTTONUP) {}
 
 //Gets user input for the map size, recurse if there is negative width of height
 void InputManager::inputMapSize(int& width, int& height)
@@ -112,6 +120,8 @@ void InputManager::inputMapSize(int& width, int& height)
 	}
 }
 
+//Gets user input for the window size, recurse if there is negative width of height
+//or invalid size from the restrictions provided
 void InputManager::inputWindowSize(int& width, int& height)
 {
 	std::string input;
@@ -175,9 +185,17 @@ void InputManager::inputWindowSize(int& width, int& height)
 	}
 }
 
-inline bool InputManager::is_number(const std::string& s)
+//Checks if user input is a valid number
+bool InputManager::is_number(const std::string& s)
 {
 	std::string::const_iterator it = s.begin();
 	while (it != s.end() && std::isdigit(*it)) ++it;
 	return !s.empty() && it == s.end();
+}
+
+//Terminates the program with a message and exit code
+void InputManager::terminateProgram(const std::string& message, int code)
+{
+	std::cout << "\n" << message << std::endl;
+	exit(code);
 }

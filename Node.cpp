@@ -1,13 +1,19 @@
 #include "Node.h"
+#include "NodesMap.h"
 
-#include "RenderManager.h"
-#include "InputManager.h"
 #include "ResourceInitializer.h"
-
+#include "InputManager.h"
 
 InputManager& Node::inputManager = InputManager::getInstance();
 ResourceInitializer& Node::resourceInit = ResourceInitializer::getInstance();
 
+Node::Node(NodeState state, int y, int x, NodesMap* owner)
+	:texture(nullptr), owner(owner), state(state), previousState(state), memoryState(state),
+	permanentState(state), pathParrent(nullptr), x(x), y(y), Gcost(0), Hcost(0) {
+	changeState(state);
+}
+
+//Changes the state and its appearance/texture accordingly
 void Node::changeState(NodeState newState)
 {
 	state = newState;
@@ -32,18 +38,24 @@ void Node::handleEvent(SDL_Event* evt)
 		{
 		case NodeState::START:
 		{	
+			//If this is not the last hovered node 
+			//a.k.a we are still in the same node
+			// and its state is not == to the state to be 
 			if (lastHovered == this && state == stateMod)
 			{
 				return;
 			}
+			//If the mouse button is held down we should try to 
+			//dynamically calculate the path depending on its phase
 			if (inputManager.getMouseState() == SDL_MOUSEBUTTONDOWN)
 			{
 				handleMapPhase(stateMod);
+				return;
 			}
 			
-
-				previousState = state;
-				changeState(stateMod); // this frame state
+			
+			previousState = state;
+			changeState(stateMod); // this frame state
 								
 			//If there is previous hovered tile change its state back
 			if (lastHovered)
@@ -70,20 +82,21 @@ void Node::handleEvent(SDL_Event* evt)
 		}
 		case NodeState::END:
 		{
-			
-			
-
+			//If this is not the last hovered node 
+			//a.k.a we are still in the same node
+			// and its state is not == to the state to be 
+			if (lastHovered == this && state == stateMod)
+			{
+				return;
+			}
+			//If the mouse button is held down we should try to 
+			//dynamically calculate the path depending on its phase
 			if (inputManager.getMouseState() == SDL_MOUSEBUTTONDOWN)
 			{
 				handleMapPhase(stateMod);
+				return;
 			}
-			else
-			{
-				if (lastHovered == this && state == stateMod)
-				{
-					return;
-				}
-			}
+			
 
 				previousState = state;
 				changeState(stateMod); // this frame state
@@ -113,6 +126,9 @@ void Node::handleEvent(SDL_Event* evt)
 		}
 		case NodeState::OBSTACLE:
 		{
+			//If this is not the last hovered node 
+			//a.k.a we are still in the same node
+			// and its state is not == to the state to be 
 			if (lastHovered == this && state == stateMod)
 			{
 				return;
@@ -121,13 +137,25 @@ void Node::handleEvent(SDL_Event* evt)
 			bool isStartOrEnd = (permanentState == NodeState::START
 				|| permanentState == NodeState::END);
 
-
+			//If the mouse button is held down
 			if (inputManager.getMouseState() == SDL_MOUSEBUTTONDOWN)
 			{
+				//If its start or end we dont want to do anything
 				if (isStartOrEnd )
 				{
 					return;
 				}	
+				//If this state is not blank/white try to react based on 
+				//map phase
+				if (permanentState != NodeState::WHITE && 
+					permanentState != NodeState::CLOSED &&
+					permanentState != stateMod)
+				{
+					handleMapPhase(stateMod);
+				}
+				
+				//If the eraser is active a.k.a we clicked on a obstacle tile
+				// now we can "delete" obstacles
 				if (owner->getEraser())
 				{
 					if (permanentState == NodeState::OBSTACLE)
@@ -138,16 +166,20 @@ void Node::handleEvent(SDL_Event* evt)
 					}	
 					return;
 				}
+
+				//Else no eraser 
 				if (permanentState != stateMod)
 				{
 					memoryState = permanentState;
 				}				
 				permanentState = stateMod;
+				
 				changeState(stateMod);
 				owner->setLastHovered(this);
 				return;
 			}
-						
+			
+			
 			changeState(stateMod); // this frame state
 			//If there is previous hovered tile change its state back
 			if (lastHovered)
@@ -217,6 +249,10 @@ void Node::handleEvent(SDL_Event* evt)
 		{
 		case NodeState::START:
 		{
+			//If this node is start node remove start node and make it nullptr
+			//If this node is end node remove end node(nullptr)
+			//and make this node start
+			//If not end or start set as start node
 			Node* startNode = owner->getStartNode();
 			Node* endNode = owner->getEndNode();
 
@@ -269,6 +305,7 @@ void Node::handleEvent(SDL_Event* evt)
 		}
 		case NodeState::END:
 		{
+			//Read comment in the begging at the SAME CASE FOR START 
 			Node* startNode = owner->getStartNode();
 			Node* endNode = owner->getEndNode();
 
@@ -279,10 +316,6 @@ void Node::handleEvent(SDL_Event* evt)
 					endNode->changeState(endNode->memoryState);
 					endNode->permanentState = endNode->memoryState;
 				}
-				/// <summary>
-				/// START NODE CHANING TO NULL
-				/// </summary>
-				/// <param name="evt"></param>
 				startNode = nullptr;
 				owner->setStartNode(nullptr);
 				permanentState = stateMod;
@@ -294,10 +327,6 @@ void Node::handleEvent(SDL_Event* evt)
 				owner->setEndNode(nullptr);
 				permanentState = memoryState;
 				changeState(permanentState);
-				/// <summary>
-				/// Here change of end node is happeing
-				/// </summary>
-				/// <param name="evt"></param>
 				endNode = nullptr;
 			}
 			else
@@ -328,13 +357,16 @@ void Node::handleEvent(SDL_Event* evt)
 		}
 		case NodeState::OBSTACLE:
 		{
+			//If this is start or end we do nothing
+			//If this is obstacle we set our eraser to true - allowing us to "delete"
+			//obstacles on mouse hover
+			//If this is not obstacle set eraser to false and make this obstacle
 			bool isStartOrEnd = permanentState == NodeState::END ||
 				permanentState == NodeState::START;
 	
 			if (permanentState == stateMod)
 			{
-				if (/*this != startNode || this != endNode*/
-					!isStartOrEnd)
+				if (!isStartOrEnd)
 				{
 					owner->setEraser(true);
 					permanentState = memoryState;
@@ -345,13 +377,21 @@ void Node::handleEvent(SDL_Event* evt)
 			{
 				owner->setEraser(false);
 				if (!isStartOrEnd)
-				{
+				{				
 					memoryState = permanentState;
 					permanentState = stateMod;
 					changeState(stateMod);
 				}
 			}
+			if ((memoryState == NodeState::PATH ||
+				memoryState == NodeState::OPEN) ||
+				memoryState == stateMod)
+			{
+				handleMapPhase(stateMod);
+			}
+			
 			//Set this to be the last hovered tile
+			
 			owner->setLastHovered(this);
 			break;
 		}
@@ -370,27 +410,47 @@ void Node::handleEvent(SDL_Event* evt)
 
 void Node::handleMapPhase(NodeState tileState)
 {
+	//function is set to be a NodesMap member function pointer
 	typedef void (NodesMap::* setStartOrEndFN)(Node* node);
-	setStartOrEndFN function = nullptr;{}
+	setStartOrEndFN function = nullptr; {}
 	switch (tileState)
 	{
-
+		//If start or end we create a "fake" event and use this handleEvent function
+		//To change start or end accordinglly
 	case NodeState::START:
 	{
 		function = &NodesMap::setStartNode;
+		SDL_Event checkIfEnd;
+		checkIfEnd.type = SDL_MOUSEBUTTONDOWN;
+		handleEvent(&checkIfEnd);
 		break;
 	}
 
 	case NodeState::END:
 	{
 		function = &NodesMap::setEndNode;
+		SDL_Event checkIfEnd;
+		checkIfEnd.type = SDL_MOUSEBUTTONDOWN;
+		handleEvent(&checkIfEnd);
 		break;
 	}
-	/*case NodeState::OBSTACLE:
-	break;
+	//If obstacle and there is already a path 
+	//Or there is no path 
+	// We should recalculate the path when removing/adding this obstacle 
+	//It is done every frame so it will have a drastic inpact on performance
+	case NodeState::OBSTACLE:
+	{
 
-	case NodeState::DEFAULT:
-	break;*/
+		Phase mapPhase = owner->getPhase();
+		if (mapPhase == Phase::PATH_FOUND ||
+			mapPhase == Phase::NO_PATH)
+		{
+			owner->setPhase(Phase::CAN_CALCULATE_PATH);
+		}
+		//Return because following is obsolete for obstacle
+		return;
+
+	}
 	default:
 		break;
 	}
@@ -422,4 +482,21 @@ void Node::handleMapPhase(NodeState tileState)
 	default:
 		break;
 	}
+}
+
+
+
+int Node::getX() const
+{
+	return x;
+}
+
+int Node::getY() const
+{
+	return y;
+}
+
+int Node::Fcost()
+{
+	return Gcost + Hcost;
 }

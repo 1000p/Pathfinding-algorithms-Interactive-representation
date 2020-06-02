@@ -1,10 +1,15 @@
 #pragma once
 
-#include "NodesMap.h"
+//#include "NodesMap.h"
+#include "SDL.h"
 
 #include <cctype>
+#include <string>
+#include <vector>
 
 class MainWindow;
+class NodesMap;
+class Node;
 
 class InputManager
 {
@@ -20,13 +25,10 @@ public:
 
 	void handleInputEvents();
 
-	SDL_EventType getMouseState() const
-	{
-		return mouseState;
-	}
+	SDL_EventType getMouseState() const;
 
 private:
-	InputManager() : mapR(nullptr), mouseState(SDL_MOUSEBUTTONUP) {}
+	InputManager();
 	InputManager(InputManager const&) = delete;
 	void operator = (InputManager const&) = delete;
 
@@ -39,11 +41,7 @@ private:
 	bool is_number(const std::string& s);	
 
 	//Terminates the program with a message and exit code
-	void terminateProgram(const std::string& message, int code)
-	{
-		std::cout <<"\n"<< message << std::endl;
-		exit(code);
-	}
+	void terminateProgram(const std::string& message, int code);
 
 	MainWindow* mainWindow;
 	NodesMap** mapR;

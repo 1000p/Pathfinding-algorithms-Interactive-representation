@@ -6,6 +6,8 @@
 
 #include <iostream>
 
+//Here we initialize and keep our non-changing resources
+//Node textures/ text font used throughout the program
 class ResourceInitializer
 {
 public:
@@ -26,8 +28,8 @@ private:
 	ResourceInitializer() = default;
 
 
-	ResourceInitializer(ResourceInitializer& const) = delete;
-	void operator = (ResourceInitializer& const) = delete;
+	ResourceInitializer(const ResourceInitializer& ) = delete;
+	void operator = (const ResourceInitializer& ) = delete;
 
 	void initializeNodeTextures();
 	

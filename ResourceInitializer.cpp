@@ -1,7 +1,8 @@
 #include "ResourceInitializer.h"
 
 #include "RenderManager.h"
-//#include "Node.h"
+
+#include "SDL_image.h"
 
 SDL_Texture* ResourceInitializer::openT = nullptr;
 SDL_Texture* ResourceInitializer::closedT = nullptr;
@@ -114,11 +115,6 @@ void ResourceInitializer::initializeNodeTextures()
 	obstacleT = SDL_CreateTextureFromSurface(renderer, obstacle);
 	whiteT = SDL_CreateTextureFromSurface(renderer, white);
 	hoverT = SDL_CreateTextureFromSurface(renderer, hover);
-
-	/*SDL_ShowWindow(RenderManager::getWindow());
-	SDL_RenderClear(renderer);
-	SDL_RenderCopy(renderer, hoverT, NULL, NULL);
-	SDL_RenderPresent(renderer);*/
 
 	//If any texture is not initialized exit
 	if (openT == nullptr || closedT == nullptr || startT == nullptr ||

@@ -146,14 +146,14 @@
   <ItemGroup>
     <ClCompile Include="AStarPathfinder.cpp" />
     <ClCompile Include="ButtonComponent.cpp" />
-    <ClCompile Include="Component.cpp" />
-    <ClCompile Include="Globals.cpp" />
+    <ClCompile Include="CheckBoxComponent.cpp" />
     <ClCompile Include="InfoComponent.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="mainFunction.cpp" />
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="NodesMap.cpp" />
+    <ClCompile Include="PopUpWindow.cpp" />
     <ClCompile Include="RenderManager.cpp" />
     <ClCompile Include="ResourceInitializer.cpp" />
   </ItemGroup>
@@ -161,14 +161,16 @@
     <ClInclude Include="AStarPathfinder.h" />
     <ClInclude Include="ButtonComponent.h" />
     <ClInclude Include="ButtonDefines.h" />
+    <ClInclude Include="CheckBoxComponent.h" />
     <ClInclude Include="Component.h" />
-    <ClInclude Include="Globals.h" />
     <ClInclude Include="InfoComponent.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="MainWindow.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="NodesMap.h" />
+    <ClInclude Include="PathAlgorithm.h" />
     <ClInclude Include="PhaseDefines.h" />
+    <ClInclude Include="PopUpWindow.h" />
     <ClInclude Include="RenderManager.h" />
     <ClInclude Include="ResourceInitializer.h" />
     <ClInclude Include="StateDefines.h" />

@@ -1,7 +1,5 @@
 #pragma once
 
-#include "NodesMap.h"
-
 #include <iostream>
 #include "SDL.h"
 
@@ -26,7 +24,7 @@ private:
     static SDL_Window* window;
     static int windowW;
     static int windowH;
-    static void createRendererAndWindow(const int width,const int height);
+    static void createRendererAndWindow(const int width, const int height);
 
     friend class InputManager;
 };

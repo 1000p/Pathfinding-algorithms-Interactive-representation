@@ -1,6 +1,5 @@
 #pragma once
 
-//#include "NodesMap.h"
 #include "StateDefines.h"
 
 #include <iostream>
@@ -9,21 +8,17 @@
 #include "SDL.h"
 #include "SDL_image.h"
 
-class NodesMap;
+
 class InputManager;
 class ResourceInitializer;
+class RenderManager;
+class NodesMap;
 
 class Node
 {
 public:
 
-	Node(NodeState state, int y, int x, NodesMap* owner)
-		:texture(nullptr),owner(owner),state(state),previousState(state),memoryState(state),
-		permanentState(state),pathParrent(nullptr),x(x),y(y), Gcost(0), Hcost(0){
-		changeState(state);
-	}
-
-	//static void initializeNodeTextures();
+	Node(NodeState state, int y, int x, NodesMap* owner);
 
 	void changeState(NodeState newState);
 
@@ -31,20 +26,11 @@ public:
 
 	void handleMapPhase(NodeState tileState);
 
-	int getX() const
-	{
-		return x;
-	}
+	int getX() const;
 
-	int getY() const
-	{
-		return y;
-	}
+	int getY() const;
 
-	int Fcost()
-	{
-		return Gcost + Hcost;
-	}
+	int Fcost();
 
 private:
 
