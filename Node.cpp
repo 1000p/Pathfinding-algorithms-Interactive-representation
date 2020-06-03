@@ -366,6 +366,7 @@ void Node::handleEvent(SDL_Event* evt)
 			{
 				if (!isStartOrEnd)
 				{
+					handleMapPhase(stateMod);
 					owner->setEraser(true);
 					permanentState = memoryState;
 					changeState(memoryState);
@@ -375,16 +376,17 @@ void Node::handleEvent(SDL_Event* evt)
 			{
 				owner->setEraser(false);
 				if (!isStartOrEnd)
-				{				
+				{	
+					if (permanentState != NodeState::WHITE)
+					{
+						handleMapPhase(stateMod);
+					}
 					memoryState = permanentState;
 					permanentState = stateMod;
 					changeState(stateMod);
 				}
 			}
-			if (memoryState != NodeState::WHITE)
-			{
-				handleMapPhase(stateMod);
-			}
+			
 			
 			//Set this to be the last hovered tile
 			
