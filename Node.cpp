@@ -144,15 +144,7 @@ void Node::handleEvent(SDL_Event* evt)
 				if (isStartOrEnd )
 				{
 					return;
-				}	
-				//If this state is not blank/white try to react based on 
-				//map phase
-				if (permanentState != NodeState::WHITE && 
-					permanentState != NodeState::CLOSED &&
-					permanentState != stateMod)
-				{
-					handleMapPhase(stateMod);
-				}
+				}				
 				
 				//If the eraser is active a.k.a we clicked on a obstacle tile
 				// now we can "delete" obstacles
@@ -165,6 +157,12 @@ void Node::handleEvent(SDL_Event* evt)
 						owner->setLastHovered(this);						
 					}	
 					return;
+				}
+				//If this state is not blank/white try to react based on 
+				//map phase
+				if (permanentState != NodeState::WHITE)
+				{
+					handleMapPhase(stateMod);
 				}
 
 				//Else no eraser 
@@ -383,9 +381,7 @@ void Node::handleEvent(SDL_Event* evt)
 					changeState(stateMod);
 				}
 			}
-			if ((memoryState == NodeState::PATH ||
-				memoryState == NodeState::OPEN) ||
-				memoryState == stateMod)
+			if (memoryState != NodeState::WHITE)
 			{
 				handleMapPhase(stateMod);
 			}

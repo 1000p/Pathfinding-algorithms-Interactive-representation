@@ -222,13 +222,13 @@ void InfoComponent::init()
 	SDL_FreeSurface(text);
 	textDst = elements[3]->getGeometry();
 	textDst.x += textDst.w;
-	textDst.h = 20; //Just so the text dont overlap with the button sidewalls
+	textDst.h = 20; //Text height in pixels
 
 	//I use tile for the checkbox texture here
 	tile = IMG_LoadTexture(renderer, "Source/checkbox.png");
-	dst.x = textDst.x + 5; dst.w = 72; //95 and 30 is 1/2 of the button size scaled
-	dst.y = textDst.y; dst.h = 36;
-	textDst.w = 60; // Just so the text dont overlap with the button sidewalls
+	dst.x = textDst.x + 5; dst.w = 72; //72 = checkbox.png width in pixels
+	dst.y = textDst.y; dst.h = 36;// 36 = checkbox.png height in pixels
+	textDst.w = 60; // Text width in pixels
 	elements.emplace_back(new CheckBoxComponent(std::make_pair(dst, tile), std::make_pair(textDst, textT),
 		ButtonType::INSTANT_CHECKBOX, owner, renderer));
 	
