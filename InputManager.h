@@ -27,6 +27,8 @@ public:
 
 	SDL_EventType getMouseState() const;
 
+	void setMouseState(SDL_EventType state);
+
 private:
 	InputManager();
 	InputManager(InputManager const&) = delete;

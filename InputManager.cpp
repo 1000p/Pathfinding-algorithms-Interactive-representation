@@ -64,6 +64,14 @@ SDL_EventType InputManager::getMouseState() const
 	return mouseState;
 }
 
+void InputManager::setMouseState(SDL_EventType state)
+{
+	if (state == SDL_MOUSEBUTTONDOWN || state == SDL_MOUSEBUTTONUP)
+	{
+		mouseState = state;
+	}
+}
+
 InputManager::InputManager() : mapR(nullptr), mainWindow(nullptr), mouseState(SDL_MOUSEBUTTONUP) {}
 
 //Gets user input for the map size, recurse if there is negative width of height

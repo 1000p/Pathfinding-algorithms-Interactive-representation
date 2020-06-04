@@ -1,4 +1,5 @@
 #include "AStarPathfinder.h"
+#include "InputManager.h"
 
 #include "Node.h"
 #include "NodesMap.h"
@@ -11,6 +12,10 @@
 void AStarPathfinder::findPath(Node* start, Node* target, bool delay,
 	SDL_Renderer* renderer, SDL_Texture* renderTarget)
 {
+	//Those are needed so the window does not freeze 
+	//It is caused because of the windows systems expects events handling
+	SDL_Event Evnt;
+	InputManager& inputManager = InputManager::getInstance();
 	//To store opened nodes
 	std::list<Node*> openNodes;
 	//To keep the previous start/end memory state
@@ -52,9 +57,14 @@ void AStarPathfinder::findPath(Node* start, Node* target, bool delay,
 
 		if (delay)
 		{
+			SDL_PollEvent(&Evnt);
+			if (Evnt.type == SDL_MOUSEBUTTONUP)
+			{
+				inputManager.setMouseState(SDL_MOUSEBUTTONUP);
+			}
 			current->owner->render(renderer, renderTarget);
 			SDL_RenderPresent(renderer);
-			SDL_Delay(10);
+			std::cout << SDL_GetError();
 		}
 
 		//If current is target we arrived to our destination
