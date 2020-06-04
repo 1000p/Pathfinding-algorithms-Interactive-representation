@@ -152,6 +152,12 @@ void Node::handleEvent(SDL_Event* evt)
 				{
 					if (permanentState == NodeState::OBSTACLE)
 					{
+						//If this state is not blank/white try to react based on 
+						//map phase
+						if (permanentState != NodeState::WHITE)
+						{
+							handleMapPhase(stateMod);
+						}
 						permanentState = memoryState;
 						changeState(memoryState);
 						owner->setLastHovered(this);						
