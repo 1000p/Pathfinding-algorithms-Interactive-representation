@@ -71,11 +71,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\loopg\Local Project\Pathfinding algorithms - Interactive representation\Pathfinding algorithms - Interactive representation\SDL\SDL2_ttf-2.0.15\include;C:\Users\loopg\Local Project\Pathfinding algorithms - Interactive representation\Pathfinding algorithms - Interactive representation\SDL\SDL2_image-2.0.5\include;C:\Users\loopg\Local Project\Pathfinding algorithms - Interactive representation\Pathfinding algorithms - Interactive representation\SDL\SDL 2.0\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\loopg\Local Project\Pathfinding algorithms - Interactive representation\Pathfinding algorithms - Interactive representation\SDL\SDL2_ttf-2.0.15\lib\x86;C:\Users\loopg\Local Project\Pathfinding algorithms - Interactive representation\Pathfinding algorithms - Interactive representation\SDL\SDL2_image-2.0.5\lib\x86;C:\Users\loopg\Local Project\Pathfinding algorithms - Interactive representation\Pathfinding algorithms - Interactive representation\SDL\SDL 2.0\lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\i29850\OneDrive - Verisk Analytics\Documents\VS Projects\SDL\SDL2_ttf-2.0.15\include;C:\Users\i29850\OneDrive - Verisk Analytics\Documents\VS Projects\SDL\SDL2_image-2.0.5\include;C:\Users\i29850\OneDrive - Verisk Analytics\Documents\VS Projects\SDL\SDL 2.0\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\i29850\OneDrive - Verisk Analytics\Documents\VS Projects\SDL\SDL2_ttf-2.0.15\lib\x86;C:\Users\i29850\OneDrive - Verisk Analytics\Documents\VS Projects\SDL\SDL2_image-2.0.5\lib\x86;C:\Users\i29850\OneDrive - Verisk Analytics\Documents\VS Projects\SDL\SDL 2.0\lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>C:\Users\i29850\OneDrive - Verisk Analytics\Documents\VS Projects\SDL\SDL2_ttf-2.0.15\include;C:\Users\i29850\OneDrive - Verisk Analytics\Documents\VS Projects\SDL\SDL2_image-2.0.5\include;C:\Users\i29850\OneDrive - Verisk Analytics\Documents\VS Projects\SDL\SDL 2.0\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\i29850\OneDrive - Verisk Analytics\Documents\VS Projects\SDL\SDL2_ttf-2.0.15\lib\x86;C:\Users\i29850\OneDrive - Verisk Analytics\Documents\VS Projects\SDL\SDL2_image-2.0.5\lib\x86;C:\Users\i29850\OneDrive - Verisk Analytics\Documents\VS Projects\SDL\SDL 2.0\lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -108,6 +110,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
