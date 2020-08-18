@@ -71,7 +71,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\i29850\OneDrive - Verisk Analytics\Documents\VS Projects\SDL\SDL2_ttf-2.0.15\include;C:\Users\i29850\OneDrive - Verisk Analytics\Documents\VS Projects\SDL\SDL2_image-2.0.5\include;C:\Users\i29850\OneDrive - Verisk Analytics\Documents\VS Projects\SDL\SDL 2.0\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\i29850\OneDrive - Verisk Analytics\Documents\VS Projects\SDL\SDL2_ttf-2.0.15\include;C:\Users\i29850\OneDrive - Verisk Analytics\Documents\VS Projects\SDL\SDL2_image-2.0.5\include;C:\Users\i29850\OneDrive - Verisk Analytics\Documents\VS Projects\SDL\SDL_2.0\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Users\i29850\OneDrive - Verisk Analytics\Documents\VS Projects\SDL\SDL2_ttf-2.0.15\lib\x86;C:\Users\i29850\OneDrive - Verisk Analytics\Documents\VS Projects\SDL\SDL2_image-2.0.5\lib\x86;C:\Users\i29850\OneDrive - Verisk Analytics\Documents\VS Projects\SDL\SDL 2.0\lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -157,6 +157,7 @@
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="NodesMap.cpp" />
     <ClCompile Include="PopUpWindow.cpp" />
+    <ClCompile Include="RecursiveDivision.cpp" />
     <ClCompile Include="RenderManager.cpp" />
     <ClCompile Include="ResourceInitializer.cpp" />
   </ItemGroup>
@@ -171,9 +172,11 @@
     <ClInclude Include="MainWindow.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="NodesMap.h" />
+    <ClInclude Include="OrientationDefines.h" />
     <ClInclude Include="PathAlgorithm.h" />
     <ClInclude Include="PhaseDefines.h" />
     <ClInclude Include="PopUpWindow.h" />
+    <ClInclude Include="RecursiveDivision.h" />
     <ClInclude Include="RenderManager.h" />
     <ClInclude Include="ResourceInitializer.h" />
     <ClInclude Include="StateDefines.h" />
