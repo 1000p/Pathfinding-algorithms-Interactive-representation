@@ -6,6 +6,7 @@
 
 class PopUpWindow;
 class NodesMap;
+class MazeAlgorithm;
 
 class MainWindow
 {
@@ -31,6 +32,7 @@ private:
 	InfoComponent* infoBar;
     PopUpWindow* algorithmWindow;
     PathAlgorithm* pathFindingAlgorithm;
+    MazeAlgorithm* mazeGenAlgorithm;
 
     int _width;
     int _height;

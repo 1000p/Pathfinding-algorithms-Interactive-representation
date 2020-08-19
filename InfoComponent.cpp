@@ -215,6 +215,28 @@ void InfoComponent::init()
 
 	elements.emplace_back(new ButtonComponent(std::make_pair(dst, tile), std::make_pair(textDst, textT),
 		ButtonType::CHOOSE_ALGORITHM, owner,renderer));
+
+	//Create "choose maze" button
+	textColor.b = textColor.g = textColor.r = 0;
+	text = TTF_RenderText_Blended(font, "Choose Maze", textColor);
+	textT = SDL_CreateTextureFromSurface(renderer, text);
+	SDL_FreeSurface(text);
+	textDst = elements[2]->getGeometry();
+	textDst.x += textDst.w;
+	textDst.h = 15; //Just so the text dont overlap with the button sidewalls
+
+	//I use tile for the button texture here
+	tile = IMG_LoadTexture(renderer, "Source/yellow_button.png");
+	dst.x = textDst.x + 5; dst.w = 114; //95 and 30 is 1/2 of the button size scaled
+	//dst.x = tileDestinations[4].x; dst.y = mod + 5; dst.w = tileSide;
+	dst.y = mod + 5; dst.h = 25;
+	textDst.w = 90; // Just so the text dont overlap with the button sidewalls
+	//Center the text in the button
+	textDst.x = dst.x + ((dst.w - textDst.w) / 2);
+	textDst.y = dst.y + ((dst.h - textDst.h) / 2);
+
+	elements.emplace_back(new ButtonComponent(std::make_pair(dst, tile), std::make_pair(textDst, textT),
+		ButtonType::CHOOSE_MAZE, owner, renderer));
 	///##############################################################
 	//Create the instant checkbox
 	text = TTF_RenderText_Blended(font, "Instant ?", textColor);

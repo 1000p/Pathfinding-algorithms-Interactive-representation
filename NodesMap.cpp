@@ -98,6 +98,22 @@ void NodesMap::setEraser(bool value)
 	eraser = value;
 }
 
+Node* NodesMap::getNode(int x, int y)
+{
+	int index = y * _width + x;//((row * _width) + col);
+
+	if (index < nodes.size())
+	{
+		Node* node = nodes[index];
+		if (node->getX() == x && node->getY() == y)
+		{
+			return node;
+		}
+	}
+
+	return nullptr;
+}
+
 NodeState NodesMap::getDrawTile() const
 {
 	return drawTile;
@@ -299,8 +315,7 @@ Node* NodesMap::is_node(SDL_Event* evt)
 			int col = ((X / tileSize)) == _width ? (X / tileSize) - 1 : (X / tileSize);
 			int row = ((Y / tileSize));
 			int index = ((row * _width) + col);
-			Node* node = nodes[index];
-			return node;
+			return nodes[index];
 		}
 	}
 	return nullptr;

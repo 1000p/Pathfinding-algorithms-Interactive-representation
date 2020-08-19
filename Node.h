@@ -22,6 +22,8 @@ public:
 
 	void changeState(NodeState newState);
 
+	void hardChangeState(NodeState newState);
+
 	void handleEvent (SDL_Event* evt);
 
 	void handleMapPhase(NodeState tileState);

@@ -1,6 +1,7 @@
 #include "RecursiveDivision.h"
 
 #include "NodesMap.h"
+#include "Node.h"
 #include <stack>
 
 void RecursiveDivision::generateMaze(NodesMap* map)
@@ -11,7 +12,6 @@ void RecursiveDivision::generateMaze(NodesMap* map)
 	int mapWidth = width;
 	int mapHeight = height;
 
-	int modifier;
 
 	int x = 0, y = 0;
 	int wX = 0, wY = 0; //Where the wall will be drawn from.
@@ -22,13 +22,13 @@ void RecursiveDivision::generateMaze(NodesMap* map)
 	std::stack<SDL_Rect> tail;
 
 	bool wallOrientationHorizontal;
-	Orientation wallOrientation = chooseOrientation(width, height);
 
 	while (true)
 	{
+		Orientation wallOrientation = chooseOrientation(width, height);
 		wallOrientationHorizontal = wallOrientation == Orientation::Horizontal ? true : false;
-		wX = x + (wallOrientationHorizontal ? 0 : rand() % width - 1);
-		wY = y + (wallOrientationHorizontal ? rand() % height - 1 : 0);
+		wX = x + (wallOrientationHorizontal ? 0 : rand() % width );
+		wY = y + (wallOrientationHorizontal ? rand() % height : 0);
 
 		pX = wX + (wallOrientationHorizontal ? rand() % width : 0);
 		pY = wY + (wallOrientationHorizontal ? 0 : rand() % height);
@@ -37,35 +37,83 @@ void RecursiveDivision::generateMaze(NodesMap* map)
 
 		if (width < resolution || height < resolution) // That is the stack use flag
 		{
-			//polzvai rect ot stack-a
-			x = tail.top().x; y = tail.top().y; width = tail.top().w; height = tail.top().h;
-			continue;
-		}
-		else
-		{
 			if (tail.empty())
 			{
 				return;
 			}
+			//polzvai rect ot stack-a
+			x = tail.top().x; y = tail.top().y; width = tail.top().w; height = tail.top().h;
+			tail.pop();
+			continue;
+		}
+		else
+		{
 			//polzvai current rect i slagai po malkiq na stack-a
 			switch (wallOrientation)
 			{
 				case Orientation::Horizontal:
 				{
-					tail.push({ wX,wY - 1,wallLenght,wY - 1 });
+					if ((height - (height - wY)) >= (height - wY) ) // Upper rectang is larger
+					{
+						tail.push({ x,wY+1,wallLenght,height - (height - wY) });						
+						height = height - (height - wY);
+					}
+					else //Upper rectang is smaller
+					{
+						tail.push({ x,y,wallLenght,height - (height - wY) });
+						height = (height - wY);
+					}
+					//Drawing of the wall --> Can be extracted to a function
+					for (int i = 0; i < wallLenght; ++i)
+					{
+						map->getNode(wX + i, wY)->hardChangeState(NodeState::OBSTACLE);
+					}
+					width = wallLenght;
+
 					break;
 				}
+				//TODO: Use abs(xx) to fix checking & generation of width and height 
 				case Orientation::Vertical:
 				{
-					tail.push({ wX - 1,wY ,wX - 1,wY });//TODO
+					if ((width - (width - wX)) >= (width - wX)-1 ) // Left rectang is larger 
+					{
+						tail.push({ wX + 1,y, (width - wX)-1 ,wallLenght });					
+						width = width - (width - wX);
+					}
+					else											//Left rectang is smaller
+					{
+						tail.push({ x,y, width - (width - wX) ,wallLenght });		/*TESTED!!!!!!!!!!!!!*/
+						width = (width - wX)-1;
+					}
+																	//Drawing of the wall --> Can be extracted to a function
+					for (int i = 0; i < wallLenght; ++i)
+					{
+						map->getNode(wX, wY + i)->hardChangeState(NodeState::OBSTACLE);
+					}
+
+					map->getNode(pX, pY)->hardChangeState(NodeState::WHITE);
+					
+					if ( wallLenght -(wallLenght-pY)  <= wallLenght - pY-1) //Upper rect ABOVE PASSAGE split is smaller
+					{
+						tail.push({ pX+1,(pY == 0 ? 0 : pY-1), width, wallLenght - (wallLenght - pY) });	/*TESTED WITH VERTICAL RIGHT BIGGER*/
+						height = wallLenght - pY-1;															/*TESTED WITH VERTICAL LEFT BIGGER*/
+					}
+					else												  //Upper rect ABOVE PASSAGE split is bigger
+					{
+						tail.push({pX+1,(pY >= mapHeight ? mapHeight : pY+1), width, wallLenght - pY - 1 }); /*TESTED WITH VERTICAL RIGHT BIGGER*/
+						height = wallLenght - (wallLenght - pY);											 /*TESTED WITH VERTICAL LEFT BIGGER*/
+					}
+
+					
 					break;
 				}
 				default:
 					break;
-				}
-		}	
-		//Drawing of the wall can be extracted to a function
-
+			}
+			
+			x = wX; y = wY;
+		}
+				
 	}
 	
 }

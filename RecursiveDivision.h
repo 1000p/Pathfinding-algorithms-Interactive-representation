@@ -1,19 +1,16 @@
 #pragma once
 #include "OrientationDefines.h"
+#include "MazeAlgorithm.h"
 
-class NodesMap;
 
-
-class RecursiveDivision
+class RecursiveDivision: public MazeAlgorithm
 {
 public:
 	RecursiveDivision(int resolution) : resolution(resolution) {}
 
-	void generateMaze(NodesMap* map);
+	virtual void generateMaze(NodesMap* map) override;
 
 private:
-
-	void drawWall(NodesMap* map);
 	Orientation chooseOrientation(int width, int height);
 
 	int resolution;

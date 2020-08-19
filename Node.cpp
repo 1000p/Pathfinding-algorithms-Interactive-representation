@@ -22,6 +22,14 @@ void Node::changeState(NodeState newState)
 
 }
 
+void Node::hardChangeState(NodeState newState)
+{
+	state = newState;
+	permanentState = state;
+
+	texture = resourceInit.getTexture(state);
+}
+
 
 void Node::handleEvent(SDL_Event* evt)
 {
@@ -158,8 +166,11 @@ void Node::handleEvent(SDL_Event* evt)
 						{
 							handleMapPhase(stateMod);
 						}
-						permanentState = memoryState;
-						changeState(memoryState);
+						permanentState = NodeState::WHITE;
+						memoryState = permanentState;
+						//CHANGES
+						//changeState(memoryState);
+						changeState(permanentState);
 						owner->setLastHovered(this);						
 					}	
 					return;
@@ -183,7 +194,8 @@ void Node::handleEvent(SDL_Event* evt)
 				return;
 			}
 			
-			
+			//CHANGES
+			//memoryState = permanentState;
 			changeState(stateMod); // this frame state
 			//If there is previous hovered tile change its state back
 			if (lastHovered)
@@ -374,8 +386,11 @@ void Node::handleEvent(SDL_Event* evt)
 				{
 					handleMapPhase(stateMod);
 					owner->setEraser(true);
-					permanentState = memoryState;
-					changeState(memoryState);
+					//CHANGES
+					permanentState = NodeState::WHITE;
+					memoryState = permanentState;
+					//to here
+					changeState(permanentState);
 				}				
 			}
 			else

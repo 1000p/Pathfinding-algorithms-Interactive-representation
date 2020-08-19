@@ -7,10 +7,11 @@
 #include "ResourceInitializer.h"
 #include "AStarPathfinder.h"
 #include "PopUpWindow.h"
+#include "RecursiveDivision.h"
 
 
 MainWindow::MainWindow() : map(nullptr), infoBar(nullptr),
-pathFindingAlgorithm(nullptr), instantAlgorithm(false)
+pathFindingAlgorithm(nullptr),mazeGenAlgorithm(nullptr), instantAlgorithm(false)
 {
 
     InputManager& inputManager = InputManager::getInstance();
@@ -117,7 +118,22 @@ void MainWindow::react_on_button(ButtonType type)
         {
             algorithmWindow = new PopUpWindow(this, SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS |
                 SDL_WINDOW_SKIP_TASKBAR | SDL_WINDOW_INPUT_GRABBED |
-                SDL_WINDOW_ALWAYS_ON_TOP);
+                SDL_WINDOW_ALWAYS_ON_TOP, WindowType::PathAlgorithmPopUpWindow);
+        }
+        break;
+    }
+    case ButtonType::CHOOSE_MAZE:
+    {
+        if (algorithmWindow)
+        {
+            algorithmWindow->close();
+            algorithmWindow = nullptr;
+        }
+        else
+        {
+            algorithmWindow = new PopUpWindow(this, SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS |
+                SDL_WINDOW_SKIP_TASKBAR | SDL_WINDOW_INPUT_GRABBED |
+                SDL_WINDOW_ALWAYS_ON_TOP, WindowType::MazeAlgorithmPopUpWindow);
         }
         break;
     }
@@ -148,6 +164,23 @@ void MainWindow::react_on_button(ButtonType type)
             pathFindingAlgorithm = nullptr;
         }
         pathFindingAlgorithm = new AStarPathfinder();
+        break;
+    }
+    case ButtonType::RECURSIVE_DIVISION:
+    {
+        if (algorithmWindow)
+        {
+            algorithmWindow->close();
+            algorithmWindow = nullptr;
+        }
+
+        if (mazeGenAlgorithm)
+        {
+            delete mazeGenAlgorithm;
+            mazeGenAlgorithm = nullptr;
+        }
+        mazeGenAlgorithm = new RecursiveDivision(1);
+        mazeGenAlgorithm->generateMaze(map);
         break;
     }
     default:

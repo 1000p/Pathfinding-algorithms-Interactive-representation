@@ -72,7 +72,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>C:\Users\i29850\OneDrive - Verisk Analytics\Documents\VS Projects\SDL\SDL2_ttf-2.0.15\include;C:\Users\i29850\OneDrive - Verisk Analytics\Documents\VS Projects\SDL\SDL2_image-2.0.5\include;C:\Users\i29850\OneDrive - Verisk Analytics\Documents\VS Projects\SDL\SDL_2.0\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\i29850\OneDrive - Verisk Analytics\Documents\VS Projects\SDL\SDL2_ttf-2.0.15\lib\x86;C:\Users\i29850\OneDrive - Verisk Analytics\Documents\VS Projects\SDL\SDL2_image-2.0.5\lib\x86;C:\Users\i29850\OneDrive - Verisk Analytics\Documents\VS Projects\SDL\SDL 2.0\lib\x86;$(LibraryPath)</LibraryPath>
+    <LibraryPath>C:\Users\i29850\OneDrive - Verisk Analytics\Documents\VS Projects\SDL\SDL2_ttf-2.0.15\lib\x86;C:\Users\i29850\OneDrive - Verisk Analytics\Documents\VS Projects\SDL\SDL2_image-2.0.5\lib\x86;C:\Users\i29850\OneDrive - Verisk Analytics\Documents\VS Projects\SDL\SDL_2.0\lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -170,6 +170,7 @@
     <ClInclude Include="InfoComponent.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="MainWindow.h" />
+    <ClInclude Include="MazeAlgorithm.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="NodesMap.h" />
     <ClInclude Include="OrientationDefines.h" />
@@ -180,6 +181,7 @@
     <ClInclude Include="RenderManager.h" />
     <ClInclude Include="ResourceInitializer.h" />
     <ClInclude Include="StateDefines.h" />
+    <ClInclude Include="WindowType.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

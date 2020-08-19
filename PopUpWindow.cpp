@@ -1,10 +1,9 @@
 #include "PopUpWindow.h"
-
 #include "ResourceInitializer.h"
 
 #include "SDL_image.h"
 
-PopUpWindow::PopUpWindow(MainWindow* owner, Uint32 windowFlags) :
+PopUpWindow::PopUpWindow(MainWindow* owner, Uint32 windowFlags, WindowType type) :
     owner(owner)
 {
     int mouseX, mouseY;
@@ -17,24 +16,21 @@ PopUpWindow::PopUpWindow(MainWindow* owner, Uint32 windowFlags) :
     SDL_RenderClear(renderer);
     SDL_RenderPresent(renderer);
 
-    ResourceInitializer& resourceInit = ResourceInitializer::getInstance();
-    //Font in with which we will render text
-    TTF_Font* font = resourceInit.getFont();
-    SDL_Color textColor{ 0,0,0 };
-
-    //Add components
-    SDL_Surface* text = TTF_RenderText_Blended(font, "A STAR", textColor);
-    SDL_Texture* textT = SDL_CreateTextureFromSurface(renderer, text);
-    SDL_FreeSurface(text);
-
-    SDL_Rect dst{ 0,0,114,30 };
-    SDL_Rect textDst{ 0,0,90,20 };
-    textDst.x = dst.x + ((dst.w - textDst.w) / 2);
-    textDst.y = dst.y + ((dst.h - textDst.h) / 2);
-
-    SDL_Texture* button = IMG_LoadTexture(renderer, "Source/yellow_button.png");
-    components.emplace_back(new ButtonComponent(std::make_pair(dst, button), std::make_pair(textDst, textT),
-        ButtonType::A_STAR_ALGORITHM, owner, renderer));
+    switch (type)
+    {
+    case WindowType::PathAlgorithmPopUpWindow:
+    {
+        createPathAlgorithmPopUpWindow();
+        break;
+    }
+    case WindowType::MazeAlgorithmPopUpWindow:
+    {
+        createMazeAlgorithmPopUpWindow();
+        break;
+    }
+    default:
+        break;
+    }
 
     render();
 
@@ -68,4 +64,49 @@ void PopUpWindow::close()
     }
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
+}
+
+void PopUpWindow::createMazeAlgorithmPopUpWindow()
+{
+    ResourceInitializer& resourceInit = ResourceInitializer::getInstance();
+    //Font in with which we will render text
+    TTF_Font* font = resourceInit.getFont();
+    SDL_Color textColor{ 0,0,0 };
+
+    //Add components
+    SDL_Surface* text = TTF_RenderText_Blended(font, "Recursive Division", textColor);
+    SDL_Texture* textT = SDL_CreateTextureFromSurface(renderer, text);
+    SDL_FreeSurface(text);
+
+    SDL_Rect dst{ 0,0,114,30 };
+    SDL_Rect textDst{ 0,0,90,20 };
+    textDst.x = dst.x + ((dst.w - textDst.w) / 2);
+    textDst.y = dst.y + ((dst.h - textDst.h) / 2);
+
+    SDL_Texture* button = IMG_LoadTexture(renderer, "Source/yellow_button.png");
+    components.emplace_back(new ButtonComponent(std::make_pair(dst, button), std::make_pair(textDst, textT),
+        ButtonType::RECURSIVE_DIVISION, owner, renderer));
+   
+}
+
+void PopUpWindow::createPathAlgorithmPopUpWindow()
+{
+    ResourceInitializer& resourceInit = ResourceInitializer::getInstance();
+    //Font in with which we will render text
+    TTF_Font* font = resourceInit.getFont();
+    SDL_Color textColor{ 0,0,0 };
+
+    //Add components
+    SDL_Surface* text = TTF_RenderText_Blended(font, "A STAR", textColor);
+    SDL_Texture* textT = SDL_CreateTextureFromSurface(renderer, text);
+    SDL_FreeSurface(text);
+
+    SDL_Rect dst{ 0,0,114,30 };
+    SDL_Rect textDst{ 0,0,90,20 };
+    textDst.x = dst.x + ((dst.w - textDst.w) / 2);
+    textDst.y = dst.y + ((dst.h - textDst.h) / 2);
+
+    SDL_Texture* button = IMG_LoadTexture(renderer, "Source/yellow_button.png");
+    components.emplace_back(new ButtonComponent(std::make_pair(dst, button), std::make_pair(textDst, textT),
+        ButtonType::A_STAR_ALGORITHM, owner, renderer));
 }

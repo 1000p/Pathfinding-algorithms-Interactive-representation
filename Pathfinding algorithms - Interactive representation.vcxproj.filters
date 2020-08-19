@@ -110,5 +110,11 @@
     <ClInclude Include="OrientationDefines.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="WindowType.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MazeAlgorithm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

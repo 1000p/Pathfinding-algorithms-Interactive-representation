@@ -30,6 +30,8 @@ public:
 
 	void setEraser(bool value);
 
+	Node* getNode(int x, int y);
+
 	NodeState getDrawTile() const;
 	
 	Node* getLastHovered() const;
