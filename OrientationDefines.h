@@ -4,7 +4,8 @@ enum class Orientation
 	Horizontal,
 	Vertical,
 	South,
-	East
-
+	East,
+	Diagonal
 };
+
 

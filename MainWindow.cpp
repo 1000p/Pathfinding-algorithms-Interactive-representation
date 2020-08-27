@@ -179,8 +179,8 @@ void MainWindow::react_on_button(ButtonType type)
             delete mazeGenAlgorithm;
             mazeGenAlgorithm = nullptr;
         }
-        mazeGenAlgorithm = new RecursiveDivision(1);
-        mazeGenAlgorithm->generateMaze(map);
+        mazeGenAlgorithm = new RecursiveDivision(2);
+        mazeGenAlgorithm->generateMaze(map,renderer);
         break;
     }
     default:

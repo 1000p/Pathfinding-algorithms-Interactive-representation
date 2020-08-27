@@ -10,7 +10,7 @@ class MazeAlgorithm
 public:
 	virtual ~MazeAlgorithm() = default;
 
-	virtual void generateMaze(NodesMap* map)  = 0;
+	virtual void generateMaze(NodesMap* map, SDL_Renderer* renderer)  = 0;
 
 };
 
