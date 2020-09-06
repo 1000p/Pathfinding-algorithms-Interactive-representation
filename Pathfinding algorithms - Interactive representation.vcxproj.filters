@@ -104,16 +104,16 @@
     <ClInclude Include="PopUpWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RecursiveDivision.h">
+    <ClInclude Include="MazeAlgorithm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="OrientationDefines.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="WindowType.h">
+    <ClInclude Include="RecursiveDivision.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MazeAlgorithm.h">
+    <ClInclude Include="WindowType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
