@@ -16,45 +16,39 @@ void AStarPathfinder::findPath(Node* start, Node* target, bool delay,
 	//It is caused because of the windows systems expects events handling
 	SDL_Event Evnt;
 	InputManager& inputManager = InputManager::getInstance();
-	//To store opened nodes
-	std::list<Node*> openNodes;
+
+	//Comparator lambda function
+	auto compare = [](Node* nodeA, Node* nodeB)
+	{
+		int nodeAFcost = nodeA->Fcost();
+		int nodeBFcost = nodeB->Fcost();
+		return (nodeAFcost > nodeBFcost ||
+			nodeAFcost == nodeBFcost
+			&&
+			nodeA->Hcost > nodeB->Hcost);
+	};
+
+	//Heap to store opened nodes
+	std::priority_queue<Node*, std::vector<Node*>, decltype(compare)> openNodes (compare) ;
 	//To keep the previous start/end memory state
 	NodeState startMemoryState = start->memoryState;
 	NodeState targetMemoryState = target->memoryState;
 
 	//Add start node to opened nodes
-	openNodes.push_back(start);
+	openNodes.push(start);
 
 	//While we have opened nodes continue
 	while (!openNodes.empty())
 	{
-		//The current node that we will work with
-		Node* current = openNodes.front();
+		//The current node that we will work with - the one with cheapest F cost
+		Node* current = openNodes.top();
 
-		//Iterate true the opened nodes to find the 
-		//one with the best path cost
-		std::list<Node*>::iterator beg = openNodes.begin();
-		std::list<Node*>::iterator end = openNodes.end();
-		for (; beg != end; ++beg)
-		{
-			int begFcost = (*beg)->Fcost();
-			int currentFcost = current->Fcost();
-
-			//If the F cost is less or F cost is == to other F cost
-			// and H cost is less then other - make current the this node
-			if (begFcost < currentFcost ||
-				(begFcost == currentFcost &&
-					(*beg)->Hcost < current->Hcost))
-			{
-				current = (*beg);
-			}
-		}
 		//Remove the current node from opened nodes and change its states
-		openNodes.remove(current);
+		openNodes.pop();
 		current->memoryState = current->permanentState;
 		current->changeState(NodeState::CLOSED);
 		current->permanentState = current->state;
-
+		std::cout << openNodes.size() << "\n";
 		if (delay)
 		{
 			SDL_PollEvent(&Evnt);
@@ -112,7 +106,7 @@ void AStarPathfinder::findPath(Node* start, Node* target, bool delay,
 						//If not in opened list add to open and change states
 						if (NotInOpen)
 						{
-							openNodes.push_back(neighbour);
+							openNodes.push(neighbour);
 							neighbour->memoryState = neighbour->permanentState;
 							neighbour->changeState(NodeState::OPEN);
 							neighbour->permanentState = neighbour->state;
@@ -121,7 +115,6 @@ void AStarPathfinder::findPath(Node* start, Node* target, bool delay,
 
 				}
 			}
-			
 		}
 		
 	
@@ -138,7 +131,6 @@ void AStarPathfinder::findPath(Node* start, Node* target, bool delay,
 	target->owner->setPhase(Phase::NO_PATH);
 }
 
-//Gets the distance between two nodes
 int AStarPathfinder::getDistance(Node* nodeA, Node* nodeB)
 {
 	int distX = abs(nodeA->x - nodeB->x);
@@ -148,7 +140,6 @@ int AStarPathfinder::getDistance(Node* nodeA, Node* nodeB)
 		14 * distX + 10 * (distY - distX));
 }
 
-//Retraces the path back from the target to the start and changes its state
 void AStarPathfinder::retracePath(Node* from, Node* to)
 {
 	while (from->pathParrent != to)
