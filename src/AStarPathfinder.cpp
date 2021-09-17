@@ -48,7 +48,7 @@ void AStarPathfinder::findPath(Node* start, Node* target, bool delay,
 		current->memoryState = current->permanentState;
 		current->changeState(NodeState::CLOSED);
 		current->permanentState = current->state;
-		std::cout << openNodes.size() << "\n";
+		
 		if (delay)
 		{
 			SDL_PollEvent(&Evnt);
@@ -58,7 +58,6 @@ void AStarPathfinder::findPath(Node* start, Node* target, bool delay,
 			}
 			current->owner->render(renderer, renderTarget);
 			SDL_RenderPresent(renderer);
-			std::cout << SDL_GetError();
 		}
 
 		//If current is target we arrived to our destination

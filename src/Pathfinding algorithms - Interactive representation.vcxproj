@@ -76,8 +76,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\i29850\OneDrive - Verisk Analytics\Documents\VS Projects\SDL\SDL2_ttf-2.0.15\include;C:\Users\i29850\OneDrive - Verisk Analytics\Documents\VS Projects\SDL\SDL2_image-2.0.5\include;C:\Users\i29850\OneDrive - Verisk Analytics\Documents\VS Projects\SDL\SDL 2.0\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\i29850\OneDrive - Verisk Analytics\Documents\VS Projects\SDL\SDL2_ttf-2.0.15\lib\x86;C:\Users\i29850\OneDrive - Verisk Analytics\Documents\VS Projects\SDL\SDL2_image-2.0.5\lib\x86;C:\Users\i29850\OneDrive - Verisk Analytics\Documents\VS Projects\SDL\SDL 2.0\lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)\SDL\SDL2_ttf-2.0.15\include;$(ProjectDir)\SDL\SDL2_image-2.0.5\include;$(ProjectDir)\SDL\SDL_2.0\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)\SDL\SDL2_ttf-2.0.15\lib\x86;$(ProjectDir)\SDL\SDL2_image-2.0.5\lib\x86;$(ProjectDir)\SDL\SDL_2.0\lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -106,6 +106,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
